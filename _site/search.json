@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Willkommen",
+    "section": "",
+    "text": "Herzlich willkommen zu diesem Self-Paced Workshop.\nHier lernst du nicht nur graue Theorie, sondern entwickelst ein intuitives Gefühl für Bayesianische Statistik. Wir nutzen moderne Tools, um Konzepte sichtbar und anfassbar zu machen.\nDas Besondere: Dieser Kurs ist vollkommen interaktiv. Alle Diagramme, Simulationen und Modelle laufen direkt hier in deinem Browser.\n\n\n\n🎓 Intuition statt Formel-Wüste: Wir starten mit dem “Warum”.\n🐍 Modernes Python: Wir nutzen den neuen Shiny-für-Python Stack.\n⚡ Interaktiv: Keine statischen Bilder. Du steuerst die Parameter.\n\n\n\n\n\n\n\n\n\n\nTipSchnellstart\n\n\n\nBist du bereit, deine Sicht auf Wahrscheinlichkeiten zu ändern?\n🚀 Loslegen: Setup & Infos\n\n\n\n\n\nGrundlagen in Python\nLust auf Statistik\nKeine Installation nötig!\n\n\n\n\n\n\n\n\n\nModul\nInhalt\nStatus\n\n\n\n\n00\nSetup & Intro\n✅ Offen\n\n\n01\nBayesian Thinking\n🔥 Empfohlen\n\n\n02\nBayes vs. Frequentist\n🧬 Deep Dive\n\n\n\n\nDieser Workshop wurde mit Quarto und Shinylive erstellt."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html#bayesian-thinking-mit-python",
+    "href": "index.html#bayesian-thinking-mit-python",
+    "title": "Willkommen",
+    "section": "",
+    "text": "Herzlich willkommen zu diesem Self-Paced Workshop.\nHier lernst du nicht nur graue Theorie, sondern entwickelst ein intuitives Gefühl für Bayesianische Statistik. Wir nutzen moderne Tools, um Konzepte sichtbar und anfassbar zu machen.\nDas Besondere: Dieser Kurs ist vollkommen interaktiv. Alle Diagramme, Simulationen und Modelle laufen direkt hier in deinem Browser.\n\n\n\n🎓 Intuition statt Formel-Wüste: Wir starten mit dem “Warum”.\n🐍 Modernes Python: Wir nutzen den neuen Shiny-für-Python Stack.\n⚡ Interaktiv: Keine statischen Bilder. Du steuerst die Parameter."
+  },
+  {
+    "objectID": "index.html#der-fahrplan",
+    "href": "index.html#der-fahrplan",
+    "title": "Willkommen",
+    "section": "",
+    "text": "Modul\nInhalt\nStatus\n\n\n\n\n00\nSetup & Intro\n✅ Offen\n\n\n01\nBayesian Thinking\n🔥 Empfohlen\n\n\n02\nBayes vs. Frequentist\n🧬 Deep Dive\n\n\n\n\nDieser Workshop wurde mit Quarto und Shinylive erstellt."
+  }
+]

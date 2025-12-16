@@ -1,0 +1,39 @@
+# Setup & Installation
+
+Das Beste vorweg: **Du brauchst keine Software zu installieren**, um diesen Workshop durchzuführen.
+
+Dank moderner **WebAssembly-Technologie (WASM)** läuft der gesamte Python-Code, den du hier siehst, direkt in deinem Browser. Dein Computer ist der Server.
+
+## Option A: Der Browser-Weg (Empfohlen)
+
+Lehne dich zurück. Wenn du die interaktiven Apps siehst, hat dein Browser bereits im Hintergrund eine kleine Python-Umgebung geladen.
+
+* ✅ Keine Installation
+* ✅ Funktioniert auf Windows, Mac, Linux & iPad
+* ✅ Datenschutzfreundlich (Daten verlassen deinen PC nicht)
+
+::: {.callout-note}
+## Ladezeit
+Beim allerersten Laden einer Seite kann es 1-2 Sekunden dauern, bis Python initialisiert ist. Danach geht es blitzschnell.
+:::
+
+---
+
+## Option B: Lokal mit VS Code (Für Profis)
+
+Wenn du den Code aus diesem Workshop kopieren und auf deinem eigenen Rechner weiterentwickeln möchtest, empfehlen wir folgendes Setup.
+
+### 1. Python installieren
+Stelle sicher, dass du Python 3.9 oder neuer installiert hast.
+
+### 2. Virtuelles Environment
+Erstelle in deinem Projektordner eine isolierte Umgebung:
+
+```bash
+# Windows
+python -m venv .venv
+.venv\Scripts\activate
+
+# Mac / Linux
+python3 -m venv .venv
+source .venv/bin/activate

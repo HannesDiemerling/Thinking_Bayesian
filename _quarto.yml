@@ -1,0 +1,43 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Thinking Bayesian"
+  author: "Hannes Diemerling & Thomas Schäfer"
+  date: "Last Updated"
+
+  navbar:
+    right:
+      - text: "About"
+        file: about.qmd
+      - icon: github
+        href: https://github.com/HannesDiemerling/Thinking_Bayesian
+
+
+  # Struktur korrigiert (Einrückungen waren verrutscht)
+  chapters:
+    - index.qmd
+    - setup.qmd
+    - part: "Modul 1: Becomming Bayesian"
+      chapters: 
+        - 01-bayes-intro.qmd
+    - part: "Modul 2: Frequently Updated"
+      chapters:
+        - 02-bayes-vs-frequentist.qmd
+
+  sidebar:
+    style: docked
+    search: true
+    collapse-level: 1
+
+format:
+  html:
+    theme:
+      light: [zephyr]
+      dark: [solar]  
+    toc: true
+    number-sections: true
+    code-fold: true
+    page-layout: article
+    

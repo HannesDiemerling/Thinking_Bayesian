@@ -1,0 +1,44 @@
+# Willkommen {.unnumbered}
+
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-8}
+## Bayesian Thinking
+Herzlich willkommen zu diesem **Self-Paced Workshop**.
+
+Hier lernst du nicht nur graue Theorie, sondern entwickelst ein intuitives Gefühl für Bayesianische Statistik. Wir nutzen moderne Tools, um Konzepte sichtbar und anfassbar zu machen.
+
+**Das Besondere:** Dieser Kurs ist vollkommen interaktiv. Alle Diagramme, Simulationen und Modelle laufen direkt hier in deinem Browser.
+
+### Was dich erwartet
+* 🎓 **Intuition statt Formel-Wüste:** Wir starten mit dem "Warum".
+* 🐍 **Modernes Python:** Wir nutzen den neuen Shiny-für-Python Stack.
+* ⚡ **Interaktiv:** Keine statischen Bilder. Du steuerst die Parameter.
+:::
+
+::: {.g-col-12 .g-col-md-4}
+::: {.callout-tip icon=false}
+## Schnellstart
+Bist du bereit, deine Sicht auf Wahrscheinlichkeiten zu ändern?
+
+[🚀 Loslegen: Setup & Infos](setup.qmd){.btn .btn-primary .btn-lg role="button"}
+:::
+
+#### Voraussetzungen
+* Grundlagen in Python
+* Lust auf Statistik
+* Keine Installation nötig!
+:::
+
+:::
+
+## Der Fahrplan
+
+| Modul | Inhalt | Status |
+| :--- | :--- | :--- |
+| **00** | **Setup & Intro** | ✅ Offen |
+| **01** | [**Bayesian Thinking**](01-bayes-intro.qmd) | 🔥 Empfohlen |
+| **02** | [**Bayes vs. Frequentist**](02-bayes-vs-frequentist.qmd) | 🧬 Deep Dive |
+
+---
+*Dieser Workshop wurde mit [Quarto](https://quarto.org) und [Shinylive](https://shiny.posit.co/py/docs/shinylive.html) erstellt.*
