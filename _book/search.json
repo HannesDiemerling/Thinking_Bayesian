@@ -178,5 +178,25 @@
     "crumbs": [
       "Willkommen"
     ]
+  },
+  {
+    "objectID": "setup.html#befehlsreferenz",
+    "href": "setup.html#befehlsreferenz",
+    "title": "1  Setup & Installation",
+    "section": "1.3 Befehlsreferenz",
+    "text": "1.3 Befehlsreferenz\n\nquarto preview: Startet den lokalen Server mit Live-Reload.\nquarto render: Erstellt die finalen HTML-Dateien im Ordner _book.\nquarto clean: Löscht alle temporären Render-Dateien und den Cache.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Setup & Installation</span>"
+    ]
+  },
+  {
+    "objectID": "setup.html#struktur",
+    "href": "setup.html#struktur",
+    "title": "1  Setup & Installation",
+    "section": "1.4 Struktur",
+    "text": "1.4 Struktur\n\n_quarto.yml: Zentrale Konfiguration (Navigation, Theme, Metadaten).\nindex.qmd: Die Startseite.\n*.qmd: Die einzelnen Kapitel des Buches.\n_book/: Der generierte HTML-Output.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Setup & Installation</span>"
+    ]
   }
 ]
