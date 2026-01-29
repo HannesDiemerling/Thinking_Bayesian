@@ -28,7 +28,7 @@ jobs:
         run: pip install jupyter shinylive
 
       - name: Install Shinylive Extension
-        run: quarto add --no-ask quarto-ext/shinylive
+        run: quarto add --no-prompt quarto-ext/shinylive
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
