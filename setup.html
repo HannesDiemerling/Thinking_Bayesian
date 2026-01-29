@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>1&nbsp; Setup &amp; Installation – Thinking Bayesian</title>
+<title>setup – Bayesian Intuition</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./01-bayes-intro.html" rel="next">
-<link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -39,20 +37,16 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-27e4b16bafe57869eab1a4da281ddb4e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-00038bbb771e4a5ca9a0527a04e25f71.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-27e4b16bafe57869eab1a4da281ddb4e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c30451789a0a2bcd5e941535c675cd30.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
+  "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
+  "panel-placement": "start",
+  "type": "textbox",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
@@ -76,209 +70,21 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
-    const toggleBodyColorMode = (bsSheetEl) => {
-      const mode = bsSheetEl.getAttribute("data-mode");
-      const bodyEl = window.document.querySelector("body");
-      if (mode === "dark") {
-        bodyEl.classList.add("quarto-dark");
-        bodyEl.classList.remove("quarto-light");
-      } else {
-        bodyEl.classList.add("quarto-light");
-        bodyEl.classList.remove("quarto-dark");
-      }
-    }
-    const toggleBodyColorPrimary = () => {
-      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
-      if (bsSheetEl) {
-        toggleBodyColorMode(bsSheetEl);
-      }
-    }
-    const setColorSchemeToggle = (alternate) => {
-      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-      for (let i=0; i < toggles.length; i++) {
-        const toggle = toggles[i];
-        if (toggle) {
-          if (alternate) {
-            toggle.classList.add("alternate");
-          } else {
-            toggle.classList.remove("alternate");
-          }
-        }
-      }
-    };
-    const toggleColorMode = (alternate) => {
-      // Switch the stylesheets
-      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
-      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-      manageTransitions('#quarto-margin-sidebar .nav-link', false);
-      if (alternate) {
-        // note: dark is layered on light, we don't disable primary!
-        enableStylesheet(alternateStylesheets);
-        for (const sheetNode of alternateStylesheets) {
-          if (sheetNode.id === "quarto-bootstrap") {
-            toggleBodyColorMode(sheetNode);
-          }
-        }
-      } else {
-        disableStylesheet(alternateStylesheets);
-        enableStylesheet(primaryStylesheets)
-        toggleBodyColorPrimary();
-      }
-      manageTransitions('#quarto-margin-sidebar .nav-link', true);
-      // Switch the toggles
-      setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
-      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-        manageTransitions("body", false);
-        window.scrollTo(0, 1);
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-          manageTransitions("body", true);
-        }, 40);
-      }
-    }
-    const disableStylesheet = (stylesheets) => {
-      for (let i=0; i < stylesheets.length; i++) {
-        const stylesheet = stylesheets[i];
-        stylesheet.rel = 'disabled-stylesheet';
-      }
-    }
-    const enableStylesheet = (stylesheets) => {
-      for (let i=0; i < stylesheets.length; i++) {
-        const stylesheet = stylesheets[i];
-        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
-          stylesheet.rel = 'stylesheet';
-        }
-      }
-    }
-    const manageTransitions = (selector, allowTransitions) => {
-      const els = window.document.querySelectorAll(selector);
-      for (let i=0; i < els.length; i++) {
-        const el = els[i];
-        if (allowTransitions) {
-          el.classList.remove('notransition');
-        } else {
-          el.classList.add('notransition');
-        }
-      }
-    }
-    const isFileUrl = () => {
-      return window.location.protocol === 'file:';
-    }
-    const hasAlternateSentinel = () => {
-      let styleSentinel = getColorSchemeSentinel();
-      if (styleSentinel !== null) {
-        return styleSentinel === "alternate";
-      } else {
-        return false;
-      }
-    }
-    const setStyleSentinel = (alternate) => {
-      const value = alternate ? "alternate" : "default";
-      if (!isFileUrl()) {
-        window.localStorage.setItem("quarto-color-scheme", value);
-      } else {
-        localAlternateSentinel = value;
-      }
-    }
-    const getColorSchemeSentinel = () => {
-      if (!isFileUrl()) {
-        const storageValue = window.localStorage.getItem("quarto-color-scheme");
-        return storageValue != null ? storageValue : localAlternateSentinel;
-      } else {
-        return localAlternateSentinel;
-      }
-    }
-    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
-      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
-      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
-      let newTheme = '';
-      if(authorPrefersDark) {
-        newTheme = isAlternate ? baseTheme : alternateTheme;
-      } else {
-        newTheme = isAlternate ? alternateTheme : baseTheme;
-      }
-      const changeGiscusTheme = () => {
-        // From: https://github.com/giscus/giscus/issues/336
-        const sendMessage = (message) => {
-          const iframe = document.querySelector('iframe.giscus-frame');
-          if (!iframe) return;
-          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
-        }
-        sendMessage({
-          setConfig: {
-            theme: newTheme
-          }
-        });
-      }
-      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
-      if (isGiscussLoaded) {
-        changeGiscusTheme();
-      }
-    };
-    const authorPrefersDark = false;
-    const darkModeDefault = authorPrefersDark;
-      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
-      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
-    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
-    // Dark / light mode switch
-    window.quartoToggleColorScheme = () => {
-      // Read the current dark / light value
-      let toAlternate = !hasAlternateSentinel();
-      toggleColorMode(toAlternate);
-      setStyleSentinel(toAlternate);
-      toggleGiscusIfUsed(toAlternate, darkModeDefault);
-      window.dispatchEvent(new Event('resize'));
-    };
-    // Switch to dark mode if need be
-    if (hasAlternateSentinel()) {
-      toggleColorMode(true);
-    } else {
-      toggleColorMode(false);
-    }
-  </script>
+<body class="nav-sidebar docked quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Thinking Bayesian</span>
-    </a>
-  </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="./about.qmd"> 
-<span class="menu-text">About</span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/HannesDiemerling/Thinking_Bayesian"> <i class="bi bi-github" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-</ul>
-          </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-</div>
-      </div> <!-- /container-fluid -->
-    </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./setup.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Setup &amp; Installation</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      Bayesian Intuition
+      </li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -288,9 +94,14 @@ ul.task-list li input[type="checkbox"] {
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Bayesian Intuition</a> 
+    </div>
+      </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
@@ -301,49 +112,27 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Willkommen</span></a>
+ <span class="menu-text">Workshop Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./setup.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Setup &amp; Installation</span></span></a>
+  <a href="./chap1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. The Conjugate Balance</span></a>
   </div>
 </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
- <span class="menu-text">Modul 1: Becomming Bayesian</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-bayes-intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Logic of Uncertainty</span></span></a>
+  <a href="./chap2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. The Interval Fallacy</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
- <span class="menu-text">Modul 2: Frequently Updated</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-bayes-vs-frequentist.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bayesian vs.&nbsp;Frequentist</span></span></a>
+  <a href="./chap3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Convergence Trace</span></a>
   </div>
 </li>
-      </ul>
-  </li>
     </ul>
     </div>
 </nav>
@@ -351,49 +140,37 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#option-a-der-browser-weg-empfohlen" id="toc-option-a-der-browser-weg-empfohlen" class="nav-link active" data-scroll-target="#option-a-der-browser-weg-empfohlen"><span class="header-section-number">1.1</span> Option A: Der Browser-Weg (Empfohlen)</a></li>
-  <li><a href="#option-b-lokal-mit-vs-code-für-profis" id="toc-option-b-lokal-mit-vs-code-für-profis" class="nav-link" data-scroll-target="#option-b-lokal-mit-vs-code-für-profis"><span class="header-section-number">1.2</span> Option B: Lokal mit VS Code (Für Profis)</a>
+  <li><a href="#setup-installation" id="toc-setup-installation" class="nav-link active" data-scroll-target="#setup-installation">Setup &amp; Installation</a>
   <ul class="collapse">
-  <li><a href="#installation-der-tools" id="toc-installation-der-tools" class="nav-link" data-scroll-target="#installation-der-tools"><span class="header-section-number">1.2.1</span> 1. Installation der Tools</a></li>
-  <li><a href="#projekt-klonen" id="toc-projekt-klonen" class="nav-link" data-scroll-target="#projekt-klonen"><span class="header-section-number">1.2.2</span> 2. Projekt klonen</a></li>
-  <li><a href="#abhängigkeiten-installieren-python" id="toc-abhängigkeiten-installieren-python" class="nav-link" data-scroll-target="#abhängigkeiten-installieren-python"><span class="header-section-number">1.2.3</span> 3. Abhängigkeiten installieren (Python)</a></li>
-  <li><a href="#live-vorschau-starten" id="toc-live-vorschau-starten" class="nav-link" data-scroll-target="#live-vorschau-starten"><span class="header-section-number">1.2.4</span> 4. Live-Vorschau starten</a></li>
+  <li><a href="#option-a-der-browser-weg-empfohlen" id="toc-option-a-der-browser-weg-empfohlen" class="nav-link" data-scroll-target="#option-a-der-browser-weg-empfohlen">Option A: Der Browser-Weg (Empfohlen)</a></li>
+  <li><a href="#option-b-lokal-mit-vs-code-für-profis" id="toc-option-b-lokal-mit-vs-code-für-profis" class="nav-link" data-scroll-target="#option-b-lokal-mit-vs-code-für-profis">Option B: Lokal mit VS Code (Für Profis)</a>
+  <ul class="collapse">
+  <li><a href="#installation-der-tools" id="toc-installation-der-tools" class="nav-link" data-scroll-target="#installation-der-tools">1. Installation der Tools</a></li>
+  <li><a href="#projekt-klonen" id="toc-projekt-klonen" class="nav-link" data-scroll-target="#projekt-klonen">2. Projekt klonen</a></li>
+  <li><a href="#abhängigkeiten-installieren-python" id="toc-abhängigkeiten-installieren-python" class="nav-link" data-scroll-target="#abhängigkeiten-installieren-python">3. Abhängigkeiten installieren (Python)</a></li>
+  <li><a href="#live-vorschau-starten" id="toc-live-vorschau-starten" class="nav-link" data-scroll-target="#live-vorschau-starten">4. Live-Vorschau starten</a></li>
   </ul></li>
-  <li><a href="#befehlsreferenz" id="toc-befehlsreferenz" class="nav-link" data-scroll-target="#befehlsreferenz"><span class="header-section-number">1.3</span> Befehlsreferenz</a></li>
-  <li><a href="#struktur" id="toc-struktur" class="nav-link" data-scroll-target="#struktur"><span class="header-section-number">1.4</span> Struktur</a></li>
+  <li><a href="#befehlsreferenz" id="toc-befehlsreferenz" class="nav-link" data-scroll-target="#befehlsreferenz">Befehlsreferenz</a></li>
+  <li><a href="#struktur" id="toc-struktur" class="nav-link" data-scroll-target="#struktur">Struktur</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Setup &amp; Installation</span></h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
+<section id="setup-installation" class="level1">
+<h1>Setup &amp; Installation</h1>
 <p>Das Beste vorweg: <strong>Du brauchst keine Software zu installieren</strong>, um diesen Workshop durchzuführen.</p>
 <p>Dank moderner <strong>WebAssembly-Technologie (WASM)</strong> läuft der gesamte Python-Code, den du hier siehst, direkt in deinem Browser. Dein Computer ist der Server.</p>
-<section id="option-a-der-browser-weg-empfohlen" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="option-a-der-browser-weg-empfohlen"><span class="header-section-number">1.1</span> Option A: Der Browser-Weg (Empfohlen)</h2>
+<section id="option-a-der-browser-weg-empfohlen" class="level2">
+<h2 class="anchored" data-anchor-id="option-a-der-browser-weg-empfohlen">Option A: Der Browser-Weg (Empfohlen)</h2>
 <p>Lehne dich zurück. Wenn du die interaktiven Apps siehst, hat dein Browser bereits im Hintergrund eine kleine Python-Umgebung geladen.</p>
 <ul>
 <li>✅ Keine Installation</li>
@@ -415,37 +192,37 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <hr>
 </section>
-<section id="option-b-lokal-mit-vs-code-für-profis" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="option-b-lokal-mit-vs-code-für-profis"><span class="header-section-number">1.2</span> Option B: Lokal mit VS Code (Für Profis)</h2>
+<section id="option-b-lokal-mit-vs-code-für-profis" class="level2">
+<h2 class="anchored" data-anchor-id="option-b-lokal-mit-vs-code-für-profis">Option B: Lokal mit VS Code (Für Profis)</h2>
 <p>Um den Workshop lokal zu bauen und zu betrachten, folge diesen Schritten:</p>
-<section id="installation-der-tools" class="level3" data-number="1.2.1">
-<h3 data-number="1.2.1" class="anchored" data-anchor-id="installation-der-tools"><span class="header-section-number">1.2.1</span> 1. Installation der Tools</h3>
+<section id="installation-der-tools" class="level3">
+<h3 class="anchored" data-anchor-id="installation-der-tools">1. Installation der Tools</h3>
 <p>Stelle sicher, dass die folgenden Programme installiert sind: * Quarto CLI: https://quarto.org/docs/get-started/ * VS Code Extension: Suche im Marketplace nach “Quarto”. * Python: https://www.python.org/</p>
 </section>
-<section id="projekt-klonen" class="level3" data-number="1.2.2">
-<h3 data-number="1.2.2" class="anchored" data-anchor-id="projekt-klonen"><span class="header-section-number">1.2.2</span> 2. Projekt klonen</h3>
+<section id="projekt-klonen" class="level3">
+<h3 class="anchored" data-anchor-id="projekt-klonen">2. Projekt klonen</h3>
 <p>Öffne dein Terminal und führe aus: git clone https://github.com/HannesDiemerling/Thinking_Bayesian cd Thinking_Bayesian</p>
 </section>
-<section id="abhängigkeiten-installieren-python" class="level3" data-number="1.2.3">
-<h3 data-number="1.2.3" class="anchored" data-anchor-id="abhängigkeiten-installieren-python"><span class="header-section-number">1.2.3</span> 3. Abhängigkeiten installieren (Python)</h3>
+<section id="abhängigkeiten-installieren-python" class="level3">
+<h3 class="anchored" data-anchor-id="abhängigkeiten-installieren-python">3. Abhängigkeiten installieren (Python)</h3>
 <p>Erstelle eine virtuelle Umgebung und installiere die benötigten Pakete: python -m venv venv source venv/bin/activate # Windows: venv pip install jupyter nbformat nbclient # Falls bayesianische Modelle gerechnet werden, zusätzlich: # pip install pymc arviz bambi</p>
 </section>
-<section id="live-vorschau-starten" class="level3" data-number="1.2.4">
-<h3 data-number="1.2.4" class="anchored" data-anchor-id="live-vorschau-starten"><span class="header-section-number">1.2.4</span> 4. Live-Vorschau starten</h3>
+<section id="live-vorschau-starten" class="level3">
+<h3 class="anchored" data-anchor-id="live-vorschau-starten">4. Live-Vorschau starten</h3>
 <p>Gib folgenden Befehl im VS Code Terminal ein: quarto preview</p>
 <p>Die Website öffnet sich automatisch im Browser und aktualisiert sich bei jeder Speicherung.</p>
 </section>
 </section>
-<section id="befehlsreferenz" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="befehlsreferenz"><span class="header-section-number">1.3</span> Befehlsreferenz</h2>
+<section id="befehlsreferenz" class="level2">
+<h2 class="anchored" data-anchor-id="befehlsreferenz">Befehlsreferenz</h2>
 <ul>
 <li>quarto preview: Startet den lokalen Server mit Live-Reload.</li>
 <li>quarto render: Erstellt die finalen HTML-Dateien im Ordner _book.</li>
 <li>quarto clean: Löscht alle temporären Render-Dateien und den Cache.</li>
 </ul>
 </section>
-<section id="struktur" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="struktur"><span class="header-section-number">1.4</span> Struktur</h2>
+<section id="struktur" class="level2">
+<h2 class="anchored" data-anchor-id="struktur">Struktur</h2>
 <ul>
 <li>_quarto.yml: Zentrale Konfiguration (Navigation, Theme, Metadaten).</li>
 <li>index.qmd: Die Startseite.</li>
@@ -455,23 +232,11 @@ ul.task-list li input[type="checkbox"] {
 
 
 </section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
-    // Ensure there is a toggle, if there isn't float one in the top right
-    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-      const i = window.document.createElement("i");
-      i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
-    }
-    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {
@@ -543,7 +308,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/HannesDiemerling\.github\.io\/Thinking_Bayesian\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -870,18 +635,6 @@ ul.task-list li input[type="checkbox"] {
     }
   });
   </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link" aria-label="Willkommen">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Willkommen</span>
-      </a>          
-  </div>
-  <div class="nav-page nav-page-next">
-      <a href="./01-bayes-intro.html" class="pagination-link" aria-label="The Logic of Uncertainty">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Logic of Uncertainty</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
 </div> <!-- /content -->
 
 

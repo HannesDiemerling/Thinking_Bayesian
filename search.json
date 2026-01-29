@@ -1,148 +1,124 @@
 [
   {
+    "objectID": "chap2.html",
+    "href": "chap2.html",
+    "title": "2. The Interval Fallacy",
+    "section": "",
+    "text": "A 95% Credible Interval actually implies probability, unlike a Confidence Interval. Use the slider to shade the High Density Interval using seaborn styling.\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\nfrom shiny import App, render, ui\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nfrom scipy.stats import norm\n\napp_ui = ui.page_fluid(\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.input_slider(\"mu\", \"Posterior Mean\", -5, 5, 0),\n            ui.input_slider(\"sigma\", \"Posterior Std\", 0.1, 3, 1),\n            ui.input_slider(\"ci\", \"Credible Mass\", 0.5, 0.99, 0.95, step=0.01)\n        ),\n        ui.card(\n            ui.output_plot(\"hdi_plot\")\n        )\n    )\n)\n\ndef server(input, output, session):\n    @render.plot\n    def hdi_plot():\n        mu = input.mu()\n        sd = input.sigma()\n        ci_mass = input.ci()\n        \n        x = np.linspace(mu - 4*sd, mu + 4*sd, 500)\n        y = norm.pdf(x, mu, sd)\n        \n        sns.set_theme(style=\"ticks\")\n        fig, ax = plt.subplots(figsize=(10, 5))\n        \n        # Main density\n        sns.lineplot(x=x, y=y, color=\"black\", ax=ax)\n        \n        # HDI Calculation (Symmetric for Normal)\n        tail = (1 - ci_mass) / 2\n        lb = norm.ppf(tail, mu, sd)\n        ub = norm.ppf(1 - tail, mu, sd)\n        \n        # Shading\n        mask = (x &gt;= lb) & (x &lt;= ub)\n        ax.fill_between(x, y, where=mask, color=\"#4CB391\", alpha=0.6, label=f\"{ci_mass*100:.0f}% HDI\")\n        \n        # Annotations\n        ax.text(mu, max(y)*0.4, f\"[{lb:.2f}, {ub:.2f}]\", \n                ha='center', fontsize=12, fontweight='bold', color='white')\n        \n        ax.set_title(\"Posterior Distribution & Credible Interval\")\n        ax.legend()\n        sns.despine()\n        \n        return fig\n\napp = App(app_ui, server)",
+    "crumbs": [
+      "2. The Interval Fallacy"
+    ]
+  },
+  {
+    "objectID": "chap2.html#highest-density-interval-hdi",
+    "href": "chap2.html#highest-density-interval-hdi",
+    "title": "2. The Interval Fallacy",
+    "section": "",
+    "text": "A 95% Credible Interval actually implies probability, unlike a Confidence Interval. Use the slider to shade the High Density Interval using seaborn styling.\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\nfrom shiny import App, render, ui\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nfrom scipy.stats import norm\n\napp_ui = ui.page_fluid(\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.input_slider(\"mu\", \"Posterior Mean\", -5, 5, 0),\n            ui.input_slider(\"sigma\", \"Posterior Std\", 0.1, 3, 1),\n            ui.input_slider(\"ci\", \"Credible Mass\", 0.5, 0.99, 0.95, step=0.01)\n        ),\n        ui.card(\n            ui.output_plot(\"hdi_plot\")\n        )\n    )\n)\n\ndef server(input, output, session):\n    @render.plot\n    def hdi_plot():\n        mu = input.mu()\n        sd = input.sigma()\n        ci_mass = input.ci()\n        \n        x = np.linspace(mu - 4*sd, mu + 4*sd, 500)\n        y = norm.pdf(x, mu, sd)\n        \n        sns.set_theme(style=\"ticks\")\n        fig, ax = plt.subplots(figsize=(10, 5))\n        \n        # Main density\n        sns.lineplot(x=x, y=y, color=\"black\", ax=ax)\n        \n        # HDI Calculation (Symmetric for Normal)\n        tail = (1 - ci_mass) / 2\n        lb = norm.ppf(tail, mu, sd)\n        ub = norm.ppf(1 - tail, mu, sd)\n        \n        # Shading\n        mask = (x &gt;= lb) & (x &lt;= ub)\n        ax.fill_between(x, y, where=mask, color=\"#4CB391\", alpha=0.6, label=f\"{ci_mass*100:.0f}% HDI\")\n        \n        # Annotations\n        ax.text(mu, max(y)*0.4, f\"[{lb:.2f}, {ub:.2f}]\", \n                ha='center', fontsize=12, fontweight='bold', color='white')\n        \n        ax.set_title(\"Posterior Distribution & Credible Interval\")\n        ax.legend()\n        sns.despine()\n        \n        return fig\n\napp = App(app_ui, server)",
+    "crumbs": [
+      "2. The Interval Fallacy"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "chap1.html",
+    "href": "chap1.html",
+    "title": "1. The Conjugate Balance",
+    "section": "",
+    "text": "The posterior is the compromise between your prior belief and the data. We use a Beta-Binomial conjugate model here. Observe how seaborn renders the density overlaps.\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\nfrom shiny import App, render, ui\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nfrom scipy.stats import beta\nimport pandas as pd\n\napp_ui = ui.page_fluid(\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.h4(\"Parameters\"),\n            ui.input_slider(\"alpha\", \"Prior Alpha (Success)\", 1, 50, 5),\n            ui.input_slider(\"beta_param\", \"Prior Beta (Failure)\", 1, 50, 5),\n            ui.hr(),\n            ui.input_slider(\"succ\", \"Data: Successes\", 0, 100, 20),\n            ui.input_slider(\"fail\", \"Data: Failures\", 0, 100, 5)\n        ),\n        ui.card(\n            ui.output_plot(\"dist_plot\")\n        )\n    )\n)\n\ndef server(input, output, session):\n    @render.plot\n    def dist_plot():\n        # Parameters\n        a_prior = input.alpha()\n        b_prior = input.beta_param()\n        data_s = input.succ()\n        data_f = input.fail()\n        \n        a_post = a_prior + data_s\n        b_post = b_prior + data_f\n        \n        # Grid\n        x = np.linspace(0, 1, 300)\n        \n        # Dataframe for Seaborn\n        # We construct the PDF values manually to overlay them cleanly\n        df = pd.DataFrame({\n            'x': np.tile(x, 2),\n            'y': np.concatenate([\n                beta.pdf(x, a_prior, b_prior),\n                beta.pdf(x, a_post, b_post)\n            ]),\n            'Distribution': ['Prior'] * 300 + ['Posterior'] * 300\n        })\n        \n        # Plotting\n        sns.set_theme(style=\"whitegrid\")\n        fig, ax = plt.subplots(figsize=(10, 6))\n        \n        # Plot Prior and Posterior\n        sns.lineplot(data=df, x='x', y='y', hue='Distribution', \n                     palette={'Prior': 'gray', 'Posterior': 'firebrick'}, \n                     linewidth=2.5, ax=ax)\n        \n        # Fill areas\n        ax.fill_between(x, beta.pdf(x, a_prior, b_prior), color='gray', alpha=0.2)\n        ax.fill_between(x, beta.pdf(x, a_post, b_post), color='firebrick', alpha=0.3)\n        \n        # Likelihood (scaled for visibility)\n        lik = beta.pdf(x, 1+data_s, 1+data_f)\n        ax.plot(x, lik, linestyle='--', color='blue', alpha=0.6, label='Likelihood (Scaled)')\n        \n        ax.set_title(f\"Update: Prior Mean {a_prior/(a_prior+b_prior):.2f} → Post Mean {a_post/(a_post+b_post):.2f}\")\n        ax.set_xlabel(\"Theta (Probability)\")\n        ax.set_ylabel(\"Density\")\n        ax.legend()\n        \n        return fig\n\napp = App(app_ui, server)",
+    "crumbs": [
+      "1. The Conjugate Balance"
+    ]
+  },
+  {
+    "objectID": "chap1.html#prior-vs.-likelihood-strength",
+    "href": "chap1.html#prior-vs.-likelihood-strength",
+    "title": "1. The Conjugate Balance",
+    "section": "",
+    "text": "The posterior is the compromise between your prior belief and the data. We use a Beta-Binomial conjugate model here. Observe how seaborn renders the density overlaps.\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\nfrom shiny import App, render, ui\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nfrom scipy.stats import beta\nimport pandas as pd\n\napp_ui = ui.page_fluid(\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.h4(\"Parameters\"),\n            ui.input_slider(\"alpha\", \"Prior Alpha (Success)\", 1, 50, 5),\n            ui.input_slider(\"beta_param\", \"Prior Beta (Failure)\", 1, 50, 5),\n            ui.hr(),\n            ui.input_slider(\"succ\", \"Data: Successes\", 0, 100, 20),\n            ui.input_slider(\"fail\", \"Data: Failures\", 0, 100, 5)\n        ),\n        ui.card(\n            ui.output_plot(\"dist_plot\")\n        )\n    )\n)\n\ndef server(input, output, session):\n    @render.plot\n    def dist_plot():\n        # Parameters\n        a_prior = input.alpha()\n        b_prior = input.beta_param()\n        data_s = input.succ()\n        data_f = input.fail()\n        \n        a_post = a_prior + data_s\n        b_post = b_prior + data_f\n        \n        # Grid\n        x = np.linspace(0, 1, 300)\n        \n        # Dataframe for Seaborn\n        # We construct the PDF values manually to overlay them cleanly\n        df = pd.DataFrame({\n            'x': np.tile(x, 2),\n            'y': np.concatenate([\n                beta.pdf(x, a_prior, b_prior),\n                beta.pdf(x, a_post, b_post)\n            ]),\n            'Distribution': ['Prior'] * 300 + ['Posterior'] * 300\n        })\n        \n        # Plotting\n        sns.set_theme(style=\"whitegrid\")\n        fig, ax = plt.subplots(figsize=(10, 6))\n        \n        # Plot Prior and Posterior\n        sns.lineplot(data=df, x='x', y='y', hue='Distribution', \n                     palette={'Prior': 'gray', 'Posterior': 'firebrick'}, \n                     linewidth=2.5, ax=ax)\n        \n        # Fill areas\n        ax.fill_between(x, beta.pdf(x, a_prior, b_prior), color='gray', alpha=0.2)\n        ax.fill_between(x, beta.pdf(x, a_post, b_post), color='firebrick', alpha=0.3)\n        \n        # Likelihood (scaled for visibility)\n        lik = beta.pdf(x, 1+data_s, 1+data_f)\n        ax.plot(x, lik, linestyle='--', color='blue', alpha=0.6, label='Likelihood (Scaled)')\n        \n        ax.set_title(f\"Update: Prior Mean {a_prior/(a_prior+b_prior):.2f} → Post Mean {a_post/(a_post+b_post):.2f}\")\n        ax.set_xlabel(\"Theta (Probability)\")\n        ax.set_ylabel(\"Density\")\n        ax.legend()\n        \n        return fig\n\napp = App(app_ui, server)",
+    "crumbs": [
+      "1. The Conjugate Balance"
+    ]
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Thinking Bayesian",
+    "title": "Workshop Overview",
     "section": "",
-    "text": "Willkommen",
+    "text": "This workshop addresses common errors in Bayesian reasoning using interactive Python simulations.\nStack: * Engine: Quarto + Shinylive (WASM) * Visualization: Seaborn + Matplotlib * CI/CD: GitHub Actions\nSelect a chapter on the left to begin.",
     "crumbs": [
-      "Willkommen"
+      "Workshop Overview"
     ]
   },
   {
-    "objectID": "index.html#bayesian-thinking",
-    "href": "index.html#bayesian-thinking",
-    "title": "Thinking Bayesian",
-    "section": "Bayesian Thinking",
-    "text": "Bayesian Thinking\nHerzlich willkommen zu diesem Self-Paced Workshop.\nHier lernst du nicht nur graue Theorie, sondern entwickelst ein intuitives Gefühl für Bayesianische Statistik. Wir nutzen moderne Tools, um Konzepte sichtbar und anfassbar zu machen.\nDas Besondere: Dieser Kurs ist vollkommen interaktiv. Alle Diagramme, Simulationen und Modelle laufen direkt hier in deinem Browser.\n\nWas dich erwartet\n\n🎓 Intuition statt Formel-Wüste: Wir starten mit dem “Warum”.\n🐍 Modernes Python: Wir nutzen den neuen Shiny-für-Python Stack.\n⚡ Interaktiv: Keine statischen Bilder. Du steuerst die Parameter.",
+    "objectID": "index.html#bayesian-statistics-the-misconceptions",
+    "href": "index.html#bayesian-statistics-the-misconceptions",
+    "title": "Workshop Overview",
+    "section": "",
+    "text": "This workshop addresses common errors in Bayesian reasoning using interactive Python simulations.\nStack: * Engine: Quarto + Shinylive (WASM) * Visualization: Seaborn + Matplotlib * CI/CD: GitHub Actions\nSelect a chapter on the left to begin.",
     "crumbs": [
-      "Willkommen"
-    ]
-  },
-  {
-    "objectID": "index.html#der-fahrplan",
-    "href": "index.html#der-fahrplan",
-    "title": "Thinking Bayesian",
-    "section": "Der Fahrplan",
-    "text": "Der Fahrplan\n\n\n\nModul\nInhalt\nStatus\n\n\n\n\n00\nSetup & Intro\n✅ Offen\n\n\n01\nBayesian Thinking\n🔥 Empfohlen\n\n\n02\nBayes vs. Frequentist\n🧬 Deep Dive\n\n\n\n\nDieser Workshop wurde mit Quarto und Shinylive erstellt.",
-    "crumbs": [
-      "Willkommen"
+      "Workshop Overview"
     ]
   },
   {
     "objectID": "setup.html",
     "href": "setup.html",
-    "title": "1  Setup & Installation",
+    "title": "Setup & Installation",
     "section": "",
-    "text": "1.1 Option A: Der Browser-Weg (Empfohlen)\nDas Beste vorweg: Du brauchst keine Software zu installieren, um diesen Workshop durchzuführen.\nDank moderner WebAssembly-Technologie (WASM) läuft der gesamte Python-Code, den du hier siehst, direkt in deinem Browser. Dein Computer ist der Server.\nLehne dich zurück. Wenn du die interaktiven Apps siehst, hat dein Browser bereits im Hintergrund eine kleine Python-Umgebung geladen.",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Setup & Installation</span>"
-    ]
+    "text": "Das Beste vorweg: Du brauchst keine Software zu installieren, um diesen Workshop durchzuführen.\nDank moderner WebAssembly-Technologie (WASM) läuft der gesamte Python-Code, den du hier siehst, direkt in deinem Browser. Dein Computer ist der Server.\n\n\nLehne dich zurück. Wenn du die interaktiven Apps siehst, hat dein Browser bereits im Hintergrund eine kleine Python-Umgebung geladen.\n\n✅ Keine Installation\n✅ Funktioniert auf Windows, Mac, Linux & iPad\n✅ Datenschutzfreundlich (Daten verlassen deinen PC nicht)\n\n\n\n\n\n\n\nNoteLadezeit\n\n\n\nBeim allerersten Laden einer Seite kann es 1-2 Sekunden dauern, bis Python initialisiert ist. Danach geht es blitzschnell.\n\n\n\n\n\n\nUm den Workshop lokal zu bauen und zu betrachten, folge diesen Schritten:\n\n\nStelle sicher, dass die folgenden Programme installiert sind: * Quarto CLI: https://quarto.org/docs/get-started/ * VS Code Extension: Suche im Marketplace nach “Quarto”. * Python: https://www.python.org/\n\n\n\nÖffne dein Terminal und führe aus: git clone https://github.com/HannesDiemerling/Thinking_Bayesian cd Thinking_Bayesian\n\n\n\nErstelle eine virtuelle Umgebung und installiere die benötigten Pakete: python -m venv venv source venv/bin/activate # Windows: venv pip install jupyter nbformat nbclient # Falls bayesianische Modelle gerechnet werden, zusätzlich: # pip install pymc arviz bambi\n\n\n\nGib folgenden Befehl im VS Code Terminal ein: quarto preview\nDie Website öffnet sich automatisch im Browser und aktualisiert sich bei jeder Speicherung.\n\n\n\n\n\nquarto preview: Startet den lokalen Server mit Live-Reload.\nquarto render: Erstellt die finalen HTML-Dateien im Ordner _book.\nquarto clean: Löscht alle temporären Render-Dateien und den Cache.\n\n\n\n\n\n_quarto.yml: Zentrale Konfiguration (Navigation, Theme, Metadaten).\nindex.qmd: Die Startseite.\n*.qmd: Die einzelnen Kapitel des Buches.\n_book/: Der generierte HTML-Output."
   },
   {
     "objectID": "setup.html#option-a-der-browser-weg-empfohlen",
     "href": "setup.html#option-a-der-browser-weg-empfohlen",
-    "title": "1  Setup & Installation",
+    "title": "Setup & Installation",
     "section": "",
-    "text": "✅ Keine Installation\n✅ Funktioniert auf Windows, Mac, Linux & iPad\n✅ Datenschutzfreundlich (Daten verlassen deinen PC nicht)\n\n\n\n\n\n\n\nNoteLadezeit\n\n\n\nBeim allerersten Laden einer Seite kann es 1-2 Sekunden dauern, bis Python initialisiert ist. Danach geht es blitzschnell.",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Setup & Installation</span>"
-    ]
+    "text": "Lehne dich zurück. Wenn du die interaktiven Apps siehst, hat dein Browser bereits im Hintergrund eine kleine Python-Umgebung geladen.\n\n✅ Keine Installation\n✅ Funktioniert auf Windows, Mac, Linux & iPad\n✅ Datenschutzfreundlich (Daten verlassen deinen PC nicht)\n\n\n\n\n\n\n\nNoteLadezeit\n\n\n\nBeim allerersten Laden einer Seite kann es 1-2 Sekunden dauern, bis Python initialisiert ist. Danach geht es blitzschnell."
   },
   {
     "objectID": "setup.html#option-b-lokal-mit-vs-code-für-profis",
     "href": "setup.html#option-b-lokal-mit-vs-code-für-profis",
-    "title": "1  Setup & Installation",
-    "section": "1.2 Option B: Lokal mit VS Code (Für Profis)",
-    "text": "1.2 Option B: Lokal mit VS Code (Für Profis)\nUm den Workshop lokal zu bauen und zu betrachten, folge diesen Schritten:\n\n1.2.1 1. Installation der Tools\nStelle sicher, dass die folgenden Programme installiert sind: * Quarto CLI: https://quarto.org/docs/get-started/ * VS Code Extension: Suche im Marketplace nach “Quarto”. * Python: https://www.python.org/\n\n\n1.2.2 2. Projekt klonen\nÖffne dein Terminal und führe aus: git clone https://github.com/HannesDiemerling/Thinking_Bayesian cd Thinking_Bayesian\n\n\n1.2.3 3. Abhängigkeiten installieren (Python)\nErstelle eine virtuelle Umgebung und installiere die benötigten Pakete: python -m venv venv source venv/bin/activate # Windows: venv pip install jupyter nbformat nbclient # Falls bayesianische Modelle gerechnet werden, zusätzlich: # pip install pymc arviz bambi\n\n\n1.2.4 4. Live-Vorschau starten\nGib folgenden Befehl im VS Code Terminal ein: quarto preview\nDie Website öffnet sich automatisch im Browser und aktualisiert sich bei jeder Speicherung.",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Setup & Installation</span>"
-    ]
+    "title": "Setup & Installation",
+    "section": "",
+    "text": "Um den Workshop lokal zu bauen und zu betrachten, folge diesen Schritten:\n\n\nStelle sicher, dass die folgenden Programme installiert sind: * Quarto CLI: https://quarto.org/docs/get-started/ * VS Code Extension: Suche im Marketplace nach “Quarto”. * Python: https://www.python.org/\n\n\n\nÖffne dein Terminal und führe aus: git clone https://github.com/HannesDiemerling/Thinking_Bayesian cd Thinking_Bayesian\n\n\n\nErstelle eine virtuelle Umgebung und installiere die benötigten Pakete: python -m venv venv source venv/bin/activate # Windows: venv pip install jupyter nbformat nbclient # Falls bayesianische Modelle gerechnet werden, zusätzlich: # pip install pymc arviz bambi\n\n\n\nGib folgenden Befehl im VS Code Terminal ein: quarto preview\nDie Website öffnet sich automatisch im Browser und aktualisiert sich bei jeder Speicherung."
   },
   {
     "objectID": "setup.html#befehlsreferenz",
     "href": "setup.html#befehlsreferenz",
-    "title": "1  Setup & Installation",
-    "section": "1.3 Befehlsreferenz",
-    "text": "1.3 Befehlsreferenz\n\nquarto preview: Startet den lokalen Server mit Live-Reload.\nquarto render: Erstellt die finalen HTML-Dateien im Ordner _book.\nquarto clean: Löscht alle temporären Render-Dateien und den Cache.",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Setup & Installation</span>"
-    ]
+    "title": "Setup & Installation",
+    "section": "",
+    "text": "quarto preview: Startet den lokalen Server mit Live-Reload.\nquarto render: Erstellt die finalen HTML-Dateien im Ordner _book.\nquarto clean: Löscht alle temporären Render-Dateien und den Cache."
   },
   {
     "objectID": "setup.html#struktur",
     "href": "setup.html#struktur",
-    "title": "1  Setup & Installation",
-    "section": "1.4 Struktur",
-    "text": "1.4 Struktur\n\n_quarto.yml: Zentrale Konfiguration (Navigation, Theme, Metadaten).\nindex.qmd: Die Startseite.\n*.qmd: Die einzelnen Kapitel des Buches.\n_book/: Der generierte HTML-Output.",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Setup & Installation</span>"
-    ]
-  },
-  {
-    "objectID": "01-bayes-intro.html",
-    "href": "01-bayes-intro.html",
-    "title": "2  The Logic of Uncertainty",
+    "title": "Setup & Installation",
     "section": "",
-    "text": "2.1 The Scenario: A Rare Disease\nWe begin with a concrete scenario common in medical diagnostics to understand why human intuition often fails at probability and how Bayesian reasoning provides the correct framework.\nImagine a disease that affects 1% of the population (the prevalence). There is a test for this disease that is 99% accurate. Specifically: 1. Sensitivity: If you have the disease, the test is positive 99% of the time. 2. Specificity: If you do not have the disease, the test is negative 99% of the time.\nThe Problem: A patient takes the test and receives a Positive result. Intuitively, most people (and even many doctors) assume the probability the patient has the disease is near 99%.\nThe Reality: The actual probability is only 50%.",
-    "crumbs": [
-      "Modul 1: Becomming Bayesian",
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>The Logic of Uncertainty</span>"
-    ]
+    "text": "_quarto.yml: Zentrale Konfiguration (Navigation, Theme, Metadaten).\nindex.qmd: Die Startseite.\n*.qmd: Die einzelnen Kapitel des Buches.\n_book/: Der generierte HTML-Output."
   },
   {
-    "objectID": "01-bayes-intro.html#the-failure-of-intuition",
-    "href": "01-bayes-intro.html#the-failure-of-intuition",
-    "title": "2  The Logic of Uncertainty",
-    "section": "2.2 The Failure of Intuition",
-    "text": "2.2 The Failure of Intuition\nWhy is the intuitive answer wrong? It ignores the Prior (the prevalence). Because the disease is rare, the absolute number of False Positives from the massive healthy population overwhelms the True Positives from the tiny sick population.\nBayesian thinking forces us to account for this base rate.",
-    "crumbs": [
-      "Modul 1: Becomming Bayesian",
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>The Logic of Uncertainty</span>"
-    ]
-  },
-  {
-    "objectID": "01-bayes-intro.html#the-bayesian-solution",
-    "href": "01-bayes-intro.html#the-bayesian-solution",
-    "title": "2  The Logic of Uncertainty",
-    "section": "2.3 The Bayesian Solution",
-    "text": "2.3 The Bayesian Solution\nWe do not look at the test accuracy in isolation. We update our prior belief based on the evidence.\n\\[P(\\text{Disease} | \\text{Positive}) = \\frac{P(\\text{Positive} | \\text{Disease}) \\cdot P(\\text{Disease})}{P(\\text{Positive})}\\]\n\n2.3.1 Interactive Simulation\nUse the dashboard below to visualize this relationship. 1. Set the Prevalence to a low number (e.g., 0.01). 2. Keep Sensitivity and Specificity high (0.99). 3. Observe the bar chart. Note how the “False Positives” (Red) compete with the “True Positives” (Green).\n```qrlvjqaxqsfkogylfz #| standalone: true #| viewerHeight: 550\nfrom shiny import App, render, ui import matplotlib.pyplot as plt import numpy as np\napp_ui = ui.page_fillable( ui.layout_columns( ui.card( ui.card_header(“Diagnostic Parameters”), ui.input_slider(“prevalence”, “Prevalence (Prior Belief)”, 0.001, 0.1, 0.01, step=0.001), ui.input_slider(“sensitivity”, “Sensitivity (True Positive Rate)”, 0.9, 1.0, 0.99, step=0.001), ui.input_slider(“specificity”, “Specificity (True Negative Rate)”, 0.9, 1.0, 0.99, step=0.001), ui.hr(), ui.output_text_verbatim(“result_text”) ), ui.card( ui.card_header(“Population Breakdown”), ui.output_plot(“bayes_plot”), ), col_widths=[4, 8] ) )\ndef server(input, output, session):\n@render.text\ndef result_text():\n    # calculations\n    prev = input.prevalence()\n    sens = input.sensitivity()\n    spec = input.specificity()\n    \n    # Bayes Theorem\n    p_pos_given_disease = sens\n    p_pos_given_healthy = 1 - spec\n    \n    numerator = p_pos_given_disease * prev\n    denominator = numerator + (p_pos_given_healthy * (1 - prev))\n    \n    post_prob = numerator / denominator\n    \n    return f\"Probability of Disease given Positive Test:\\n{post_prob:.1%}\"\n\n@render.plot\ndef bayes_plot():\n    prev = input.prevalence()\n    sens = input.sensitivity()\n    spec = input.specificity()\n    \n    # Hypothetical population of 10,000\n    n_pop = 10000\n    n_sick = n_pop * prev\n    n_healthy = n_pop * (1 - prev)\n    \n    # Outcomes\n    true_pos = n_sick * sens\n    false_neg = n_sick * (1 - sens)\n    \n    true_neg = n_healthy * spec\n    false_pos = n_healthy * (1 - spec)\n    \n    # Plotting\n    fig, ax = plt.subplots()\n    \n    # Data for stacked bars\n    categories = ['Sick Population', 'Healthy Population']\n    \n    # Bar 1: Sick (Split into Detected and Missed)\n    ax.bar(0, true_pos, color='#27ae60', label='True Positive (Correct)', width=0.6)\n    ax.bar(0, false_neg, bottom=true_pos, color='#2c3e50', label='False Negative (Missed)', width=0.6, alpha=0.3)\n    \n    # Bar 2: Healthy (Split into True Negative and False Alarm)\n    ax.bar(1, false_pos, color='#c0392b', label='False Positive (Alarm)', width=0.6)\n    ax.bar(1, true_neg, bottom=false_pos, color='#95a5a6', label='True Negative (Correct)', width=0.6, alpha=0.3)\n    \n    ax.set_xticks([0, 1])\n    ax.set_xticklabels(categories)\n    ax.set_ylabel(\"Number of People\")\n    ax.set_title(f\"Visualizing the Base Rate Fallacy (N={n_pop})\")\n    \n    # Annotation to highlight the comparison\n    ax.annotate(f\"{int(true_pos)} True Pos\", xy=(0, true_pos/2), ha='center', color='white', fontweight='bold')\n    if false_pos &gt; 5:\n        ax.annotate(f\"{int(false_pos)} False Pos\", xy=(1, false_pos/2), ha='center', color='white', fontweight='bold')\n    \n    ax.legend()\n    ax.spines['top'].set_visible(False)\n    ax.spines['right'].set_visible(False)\n    \n    return fig\napp = App(app_ui, server)",
-    "crumbs": [
-      "Modul 1: Becomming Bayesian",
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>The Logic of Uncertainty</span>"
-    ]
-  },
-  {
-    "objectID": "02-bayes-vs-frequentist.html",
-    "href": "02-bayes-vs-frequentist.html",
-    "title": "3  Bayesian vs. Frequentist",
+    "objectID": "chap3.html",
+    "href": "chap3.html",
+    "title": "3. Convergence Trace",
     "section": "",
-    "text": "3.1 The Scenario: Marketing Conversion\nIn this chapter, we contrast the two dominant statistical philosophies using a standard industry problem: A/B Testing.\nYou run an e-commerce website. You are testing two versions of a checkout button: * Version A (Control): Blue Button. * Version B (Treatment): Red Button.\nYou collect data from 1,000 users.",
+    "text": "As \\(N\\) increases, the posterior variance collapses. This plot traces the error of the estimated mean against the true mean using a seaborn trace plot.\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\nfrom shiny import App, render, ui, reactive\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nimport pandas as pd\n\napp_ui = ui.page_fluid(\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.input_action_button(\"step\", \"Add 50 Samples\", class_=\"btn-primary\"),\n            ui.input_action_button(\"reset\", \"Reset\", class_=\"btn-outline-danger\"),\n            ui.hr(),\n            ui.output_text_verbatim(\"info\")\n        ),\n        ui.card(\n            ui.output_plot(\"trace_plot\")\n        )\n    )\n)\n\ndef server(input, output, session):\n    # State: list of running means\n    state = reactive.Value(pd.DataFrame(columns=['n', 'mean_est', 'upper', 'lower']))\n    true_mu = 2.0\n    true_sigma = 3.0\n    \n    @reactive.Effect\n    @reactive.event(input.step)\n    def _():\n        current_df = state.get()\n        start_n = current_df['n'].max() if not current_df.empty else 0\n        \n        # Simulate batch\n        new_n = start_n + 50\n        # Generate full dataset up to new_n to calculate cumulative mean easier\n        # In prod, optimize this. For workshop, this is fine.\n        data = np.random.normal(true_mu, true_sigma, int(new_n))\n        \n        mu_est = np.mean(data)\n        sem = true_sigma / np.sqrt(new_n) # Standard Error\n        \n        new_row = pd.DataFrame({\n            'n': [new_n], \n            'mean_est': [mu_est],\n            'upper': [mu_est + 1.96*sem],\n            'lower': [mu_est - 1.96*sem]\n        })\n        \n        state.set(pd.concat([current_df, new_row], ignore_index=True))\n\n    @reactive.Effect\n    @reactive.event(input.reset)\n    def _():\n        state.set(pd.DataFrame(columns=['n', 'mean_est', 'upper', 'lower']))\n\n    @render.text\n    def info():\n        df = state.get()\n        if df.empty: return \"No data.\"\n        last = df.iloc[-1]\n        return f\"N={int(last['n'])}, Estimate={last['mean_est']:.3f}\"\n\n    @render.plot\n    def trace_plot():\n        df = state.get()\n        sns.set_theme(style=\"darkgrid\")\n        fig, ax = plt.subplots(figsize=(10, 6))\n        \n        ax.axhline(true_mu, color='red', linestyle='--', label='True Mean')\n        \n        if not df.empty:\n            sns.lineplot(data=df, x='n', y='mean_est', marker='o', color='purple', ax=ax, label='Estimate')\n            ax.fill_between(df['n'], df['lower'], df['upper'], color='purple', alpha=0.2)\n        \n        ax.set_ylim(true_mu - 2, true_mu + 2)\n        ax.set_ylabel(\"Parameter Estimate\")\n        ax.set_xlabel(\"Sample Size (N)\")\n        ax.set_title(\"Convergence of Posterior Mean\")\n        return fig\n\napp = App(app_ui, server)",
     "crumbs": [
-      "Modul 2: Frequently Updated",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Bayesian vs. Frequentist</span>"
+      "3. Convergence Trace"
     ]
   },
   {
-    "objectID": "02-bayes-vs-frequentist.html#the-frequentist-approach-the-problem",
-    "href": "02-bayes-vs-frequentist.html#the-frequentist-approach-the-problem",
-    "title": "3  Bayesian vs. Frequentist",
-    "section": "3.2 The Frequentist Approach (The Problem)",
-    "text": "3.2 The Frequentist Approach (The Problem)\nIn a traditional Frequentist framework (e.g., a t-test or Chi-square), you calculate a p-value.\nIf \\(p &lt; 0.05\\), you reject the null hypothesis. However, this approach has significant limitations for decision-making: 1. Indirect Meaning: The p-value tells you the probability of seeing this data assuming there is no difference. It does not tell you the probability that Version B is better. 2. Point Estimates: It often provides a single point estimate (e.g., “Conversion increased by 2%”), hiding the uncertainty distribution. 3. Peeking: You are strictly forbidden from checking results early (stopping rules), which is impractical in business.",
+    "objectID": "chap3.html#visualizing-convergence",
+    "href": "chap3.html#visualizing-convergence",
+    "title": "3. Convergence Trace",
+    "section": "",
+    "text": "As \\(N\\) increases, the posterior variance collapses. This plot traces the error of the estimated mean against the true mean using a seaborn trace plot.\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\nfrom shiny import App, render, ui, reactive\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nimport pandas as pd\n\napp_ui = ui.page_fluid(\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.input_action_button(\"step\", \"Add 50 Samples\", class_=\"btn-primary\"),\n            ui.input_action_button(\"reset\", \"Reset\", class_=\"btn-outline-danger\"),\n            ui.hr(),\n            ui.output_text_verbatim(\"info\")\n        ),\n        ui.card(\n            ui.output_plot(\"trace_plot\")\n        )\n    )\n)\n\ndef server(input, output, session):\n    # State: list of running means\n    state = reactive.Value(pd.DataFrame(columns=['n', 'mean_est', 'upper', 'lower']))\n    true_mu = 2.0\n    true_sigma = 3.0\n    \n    @reactive.Effect\n    @reactive.event(input.step)\n    def _():\n        current_df = state.get()\n        start_n = current_df['n'].max() if not current_df.empty else 0\n        \n        # Simulate batch\n        new_n = start_n + 50\n        # Generate full dataset up to new_n to calculate cumulative mean easier\n        # In prod, optimize this. For workshop, this is fine.\n        data = np.random.normal(true_mu, true_sigma, int(new_n))\n        \n        mu_est = np.mean(data)\n        sem = true_sigma / np.sqrt(new_n) # Standard Error\n        \n        new_row = pd.DataFrame({\n            'n': [new_n], \n            'mean_est': [mu_est],\n            'upper': [mu_est + 1.96*sem],\n            'lower': [mu_est - 1.96*sem]\n        })\n        \n        state.set(pd.concat([current_df, new_row], ignore_index=True))\n\n    @reactive.Effect\n    @reactive.event(input.reset)\n    def _():\n        state.set(pd.DataFrame(columns=['n', 'mean_est', 'upper', 'lower']))\n\n    @render.text\n    def info():\n        df = state.get()\n        if df.empty: return \"No data.\"\n        last = df.iloc[-1]\n        return f\"N={int(last['n'])}, Estimate={last['mean_est']:.3f}\"\n\n    @render.plot\n    def trace_plot():\n        df = state.get()\n        sns.set_theme(style=\"darkgrid\")\n        fig, ax = plt.subplots(figsize=(10, 6))\n        \n        ax.axhline(true_mu, color='red', linestyle='--', label='True Mean')\n        \n        if not df.empty:\n            sns.lineplot(data=df, x='n', y='mean_est', marker='o', color='purple', ax=ax, label='Estimate')\n            ax.fill_between(df['n'], df['lower'], df['upper'], color='purple', alpha=0.2)\n        \n        ax.set_ylim(true_mu - 2, true_mu + 2)\n        ax.set_ylabel(\"Parameter Estimate\")\n        ax.set_xlabel(\"Sample Size (N)\")\n        ax.set_title(\"Convergence of Posterior Mean\")\n        return fig\n\napp = App(app_ui, server)",
     "crumbs": [
-      "Modul 2: Frequently Updated",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Bayesian vs. Frequentist</span>"
-    ]
-  },
-  {
-    "objectID": "02-bayes-vs-frequentist.html#the-bayesian-approach-the-solution",
-    "href": "02-bayes-vs-frequentist.html#the-bayesian-approach-the-solution",
-    "title": "3  Bayesian vs. Frequentist",
-    "section": "3.3 The Bayesian Approach (The Solution)",
-    "text": "3.3 The Bayesian Approach (The Solution)\nBayesian statistics answers the question you actually care about: “What is the probability that Version B is better than Version A?”\nWe model the conversion rate of each version not as a fixed number, but as a distribution of possibilities. By comparing these two distributions, we can calculate direct probabilities of improvement/loss.\n\n3.3.1 Interactive Analysis\nThe simulation below models two conversion rates using Beta distributions. * Problem: We observe raw data (trials and conversions). * Solution: We visualize the uncertainty and calculate the “Probability of Improvement.”\n```droamrmkzztndvaffo #| standalone: true #| viewerHeight: 500\nfrom shiny import App, render, ui import matplotlib.pyplot as plt import numpy as np from scipy.stats import beta\napp_ui = ui.page_fillable( ui.layout_columns( ui.card( ui.card_header(“Experiment Data”), ui.h5(“Version A (Control)”), ui.input_slider(“trials_a”, “Visitors A”, 10, 1000, 500), ui.input_slider(“conv_a”, “Conversions A”, 1, 200, 50), ui.hr(), ui.h5(“Version B (Treatment)”), ui.input_slider(“trials_b”, “Visitors B”, 10, 1000, 500), ui.input_slider(“conv_b”, “Conversions B”, 1, 200, 60),\n        ui.output_text_verbatim(\"prob_statement\")\n    ),\n    ui.card(\n        ui.card_header(\"Posterior Distributions\"),\n        ui.output_plot(\"ab_plot\"),\n    ),\n    col_widths=[4, 8]\n)\n)\ndef server(input, output, session):\n@render.text\ndef prob_statement():\n    # Monte Carlo Simulation to calculate Prob(B &gt; A)\n    # This is often easier/faster than numerical integration for A/B tests\n    \n    a_samples = beta.rvs(1 + input.conv_a(), 1 + (input.trials_a() - input.conv_a()), size=10000)\n    b_samples = beta.rvs(1 + input.conv_b(), 1 + (input.trials_b() - input.conv_b()), size=10000)\n    \n    prob_b_better = np.mean(b_samples &gt; a_samples)\n    \n    return (f\"Based on this data:\\n\"\n            f\"There is a {prob_b_better:.1%} probability\\n\"\n            f\"that Version B is better than Version A.\")\n\n@render.plot\ndef ab_plot():\n    # Define x-axis range around the observed means to zoom in\n    mean_a = input.conv_a() / input.trials_a()\n    mean_b = input.conv_b() / input.trials_b()\n    avg_mean = (mean_a + mean_b) / 2\n    \n    x = np.linspace(max(0, avg_mean - 0.1), min(1, avg_mean + 0.1), 300)\n    \n    # Beta parameters (Flat prior alpha=1, beta=1 assumed)\n    y_a = beta.pdf(x, 1 + input.conv_a(), 1 + (input.trials_a() - input.conv_a()))\n    y_b = beta.pdf(x, 1 + input.conv_b(), 1 + (input.trials_b() - input.conv_b()))\n    \n    fig, ax = plt.subplots()\n    \n    # Plot A\n    ax.plot(x, y_a, label='Version A', color='blue', lw=2)\n    ax.fill_between(x, 0, y_a, color='blue', alpha=0.1)\n    \n    # Plot B\n    ax.plot(x, y_b, label='Version B', color='red', lw=2)\n    ax.fill_between(x, 0, y_b, color='red', alpha=0.1)\n    \n    ax.set_title(\"Uncertainty of Conversion Rates\")\n    ax.set_xlabel(\"True Conversion Rate\")\n    ax.set_yticks([]) # Hide y-axis as density magnitude is less intuitive\n    ax.legend()\n    ax.spines['top'].set_visible(False)\n    ax.spines['right'].set_visible(False)\n    ax.spines['left'].set_visible(False)\n    \n    return fig\napp = App(app_ui, server)",
-    "crumbs": [
-      "Modul 2: Frequently Updated",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Bayesian vs. Frequentist</span>"
+      "3. Convergence Trace"
     ]
   }
 ]
