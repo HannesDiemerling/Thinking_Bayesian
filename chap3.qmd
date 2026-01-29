@@ -1,0 +1,93 @@
+
+---
+title: "3. Convergence Trace"
+format: html
+---
+
+## Visualizing Convergence
+As $N$ increases, the posterior variance collapses. This plot traces the error of the estimated mean against the true mean using a `seaborn` trace plot.
+
+```{shinylive-python}
+#| standalone: true
+from shiny import App, render, ui, reactive
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+app_ui = ui.page_fluid(
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_action_button("step", "Add 50 Samples", class_="btn-primary"),
+            ui.input_action_button("reset", "Reset", class_="btn-outline-danger"),
+            ui.hr(),
+            ui.output_text_verbatim("info")
+        ),
+        ui.card(
+            ui.output_plot("trace_plot")
+        )
+    )
+)
+
+def server(input, output, session):
+    # State: list of running means
+    state = reactive.Value(pd.DataFrame(columns=['n', 'mean_est', 'upper', 'lower']))
+    true_mu = 2.0
+    true_sigma = 3.0
+    
+    @reactive.Effect
+    @reactive.event(input.step)
+    def _():
+        current_df = state.get()
+        start_n = current_df['n'].max() if not current_df.empty else 0
+        
+        # Simulate batch
+        new_n = start_n + 50
+        # Generate full dataset up to new_n to calculate cumulative mean easier
+        # In prod, optimize this. For workshop, this is fine.
+        data = np.random.normal(true_mu, true_sigma, int(new_n))
+        
+        mu_est = np.mean(data)
+        sem = true_sigma / np.sqrt(new_n) # Standard Error
+        
+        new_row = pd.DataFrame({
+            'n': [new_n], 
+            'mean_est': [mu_est],
+            'upper': [mu_est + 1.96*sem],
+            'lower': [mu_est - 1.96*sem]
+        })
+        
+        state.set(pd.concat([current_df, new_row], ignore_index=True))
+
+    @reactive.Effect
+    @reactive.event(input.reset)
+    def _():
+        state.set(pd.DataFrame(columns=['n', 'mean_est', 'upper', 'lower']))
+
+    @render.text
+    def info():
+        df = state.get()
+        if df.empty: return "No data."
+        last = df.iloc[-1]
+        return f"N={int(last['n'])}, Estimate={last['mean_est']:.3f}"
+
+    @render.plot
+    def trace_plot():
+        df = state.get()
+        sns.set_theme(style="darkgrid")
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        ax.axhline(true_mu, color='red', linestyle='--', label='True Mean')
+        
+        if not df.empty:
+            sns.lineplot(data=df, x='n', y='mean_est', marker='o', color='purple', ax=ax, label='Estimate')
+            ax.fill_between(df['n'], df['lower'], df['upper'], color='purple', alpha=0.2)
+        
+        ax.set_ylim(true_mu - 2, true_mu + 2)
+        ax.set_ylabel("Parameter Estimate")
+        ax.set_xlabel("Sample Size (N)")
+        ax.set_title("Convergence of Posterior Mean")
+        return fig
+
+app = App(app_ui, server)
+```

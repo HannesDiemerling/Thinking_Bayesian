@@ -1,7 +1,7 @@
 shiny
 shinylive
+numpy
 matplotlib
 seaborn
-numpy
+scipy
 pandas
-jupyter

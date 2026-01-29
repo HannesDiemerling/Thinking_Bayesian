@@ -1,46 +1,22 @@
 project:
-  type: book
-  output-dir: _book
+  type: website
+  output-dir: docs
 
-filters:
-   - shinylive
-
-book:
-  title: "Thinking Bayesian"
-  author: "Hannes Diemerling & Thomas Schäfer"
-  date: "Last Updated"
-
-  navbar:
-    right:
-      - text: "About"
-        file: about.qmd
-      - icon: github
-        href: https://github.com/HannesDiemerling/Thinking_Bayesian
-
-
-  # Struktur korrigiert (Einrückungen waren verrutscht)
-  chapters:
-    - index.qmd
-    - setup.qmd
-    - part: "Modul 1: Becomming Bayesian"
-      chapters: 
-        - 01-bayes-intro.qmd
-    - part: "Modul 2: Frequently Updated"
-      chapters:
-        - 02-bayes-vs-frequentist.qmd
-
+website:
+  title: "Bayesian Intuition"
   sidebar:
-    style: docked
+    style: "docked"
     search: true
-    collapse-level: 1
+    contents:
+      - index.qmd
+      - chap1.qmd
+      - chap2.qmd
+      - chap3.qmd
 
 format:
   html:
-    theme:
-      light: [zephyr]
-      dark: [solar]  
+    theme: cosmo
+    css: styles.css
     toc: true
-    number-sections: true
-    code-fold: true
-    page-layout: article
-    
+    filters:
+      - shinylive

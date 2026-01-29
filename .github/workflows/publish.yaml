@@ -1,38 +1,36 @@
-name: Quarto Publish
-
 on:
   push:
-    branches: [ main ]
+    branches: main
 
-permissions:
-  contents: write
+name: Build and Deploy
 
 jobs:
-  build-deploy:
+  publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Check out repository
+      - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install Python Dependencies
-        run: pip install jupyter shinylive
-
       - name: Install Shinylive Extension
-        run: quarto add --no-prompt quarto-ext/shinylive
+        run: quarto add quarto-ext/shinylive --no-prompt
 
-      - name: Render Book
-        run: quarto render
-
-      - name: Publish to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Render and Publish
+        uses: quarto-dev/quarto-actions/publish@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_book
+          target: gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

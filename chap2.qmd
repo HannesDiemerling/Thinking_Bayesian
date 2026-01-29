@@ -1,0 +1,68 @@
+
+---
+title: "2. The Interval Fallacy"
+format: html
+---
+
+## Highest Density Interval (HDI)
+A 95% Credible Interval actually implies probability, unlike a Confidence Interval.
+Use the slider to shade the High Density Interval using `seaborn` styling.
+
+```{shinylive-python}
+#| standalone: true
+from shiny import App, render, ui
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+app_ui = ui.page_fluid(
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider("mu", "Posterior Mean", -5, 5, 0),
+            ui.input_slider("sigma", "Posterior Std", 0.1, 3, 1),
+            ui.input_slider("ci", "Credible Mass", 0.5, 0.99, 0.95, step=0.01)
+        ),
+        ui.card(
+            ui.output_plot("hdi_plot")
+        )
+    )
+)
+
+def server(input, output, session):
+    @render.plot
+    def hdi_plot():
+        mu = input.mu()
+        sd = input.sigma()
+        ci_mass = input.ci()
+        
+        x = np.linspace(mu - 4*sd, mu + 4*sd, 500)
+        y = norm.pdf(x, mu, sd)
+        
+        sns.set_theme(style="ticks")
+        fig, ax = plt.subplots(figsize=(10, 5))
+        
+        # Main density
+        sns.lineplot(x=x, y=y, color="black", ax=ax)
+        
+        # HDI Calculation (Symmetric for Normal)
+        tail = (1 - ci_mass) / 2
+        lb = norm.ppf(tail, mu, sd)
+        ub = norm.ppf(1 - tail, mu, sd)
+        
+        # Shading
+        mask = (x >= lb) & (x <= ub)
+        ax.fill_between(x, y, where=mask, color="#4CB391", alpha=0.6, label=f"{ci_mass*100:.0f}% HDI")
+        
+        # Annotations
+        ax.text(mu, max(y)*0.4, f"[{lb:.2f}, {ub:.2f}]", 
+                ha='center', fontsize=12, fontweight='bold', color='white')
+        
+        ax.set_title("Posterior Distribution & Credible Interval")
+        ax.legend()
+        sns.despine()
+        
+        return fig
+
+app = App(app_ui, server)
+```
