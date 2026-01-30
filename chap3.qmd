@@ -9,6 +9,7 @@ As $N$ increases, the posterior variance collapses. This plot traces the error o
 
 ```{shinylive-python}
 #| standalone: true
+#| viewerHeight: 600
 from shiny import App, render, ui, reactive
 import numpy as np
 import seaborn as sns
@@ -90,4 +91,5 @@ def server(input, output, session):
         return fig
 
 app = App(app_ui, server)
+
 ```
