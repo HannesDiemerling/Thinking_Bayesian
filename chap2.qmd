@@ -10,6 +10,7 @@ Use the slider to shade the High Density Interval using `seaborn` styling.
 
 ```{shinylive-python}
 #| standalone: true
+#| viewerHeight: 600
 from shiny import App, render, ui
 import numpy as np
 import seaborn as sns
