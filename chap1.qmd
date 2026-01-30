@@ -9,25 +9,28 @@ Observe how `seaborn` renders the density overlaps.
 
 ```{shinylive-python}
 #| standalone: true
+#| viewerHeight: 600
+
 from shiny import App, render, ui
 import numpy as np
-import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import beta
-import pandas as pd
 
+# Layout für volle Breite und definierte Höhe
 app_ui = ui.page_fluid(
     ui.layout_sidebar(
         ui.sidebar(
-            ui.h4("Parameters"),
-            ui.input_slider("alpha", "Prior Alpha (Success)", 1, 50, 5),
-            ui.input_slider("beta_param", "Prior Beta (Failure)", 1, 50, 5),
+            ui.h4("Parameter Wahl"),
+            ui.input_slider("alpha", "Prior Alpha (Erfolge)", 1, 50, 5),
+            ui.input_slider("beta_param", "Prior Beta (Misserfolge)", 1, 50, 5),
             ui.hr(),
-            ui.input_slider("succ", "Data: Successes", 0, 100, 20),
-            ui.input_slider("fail", "Data: Failures", 0, 100, 5)
+            ui.input_slider("succ", "Daten: Erfolge", 0, 100, 20),
+            ui.input_slider("fail", "Daten: Misserfolge", 0, 100, 5),
+            width=300
         ),
         ui.card(
-            ui.output_plot("dist_plot")
+            # Wichtig: Explizite Höhe für den Plot setzen, damit er den Platz nutzt
+            ui.output_plot("dist_plot", height="500px")
         )
     )
 )
@@ -35,50 +38,55 @@ app_ui = ui.page_fluid(
 def server(input, output, session):
     @render.plot
     def dist_plot():
-        # Parameters
+        # Inputs holen
         a_prior = input.alpha()
         b_prior = input.beta_param()
         data_s = input.succ()
         data_f = input.fail()
         
+        # Posterior Berechnung
         a_post = a_prior + data_s
         b_post = b_prior + data_f
         
         # Grid
-        x = np.linspace(0, 1, 300)
+        x = np.linspace(0, 1, 500)
         
-        # Dataframe for Seaborn
-        # We construct the PDF values manually to overlay them cleanly
-        df = pd.DataFrame({
-            'x': np.tile(x, 2),
-            'y': np.concatenate([
-                beta.pdf(x, a_prior, b_prior),
-                beta.pdf(x, a_post, b_post)
-            ]),
-            'Distribution': ['Prior'] * 300 + ['Posterior'] * 300
-        })
+        # Dichten berechnen
+        y_prior = beta.pdf(x, a_prior, b_prior)
+        y_post = beta.pdf(x, a_post, b_post)
+        # Standardisierte Likelihood (Beta(s+1, f+1))
+        y_lik = beta.pdf(x, 1 + data_s, 1 + data_f)
         
-        # Plotting
-        sns.set_theme(style="whitegrid")
-        fig, ax = plt.subplots(figsize=(10, 6))
+        # Plotting Setup
+        fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
         
-        # Plot Prior and Posterior
-        sns.lineplot(data=df, x='x', y='y', hue='Distribution', 
-                     palette={'Prior': 'gray', 'Posterior': 'firebrick'}, 
-                     linewidth=2.5, ax=ax)
+        # Styling: Weniger "Box", mehr Daten
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.grid(True, axis='y', linestyle=':', alpha=0.6)
         
-        # Fill areas
-        ax.fill_between(x, beta.pdf(x, a_prior, b_prior), color='gray', alpha=0.2)
-        ax.fill_between(x, beta.pdf(x, a_post, b_post), color='firebrick', alpha=0.3)
+        # 1. Prior
+        ax.plot(x, y_prior, color='#7f8c8d', lw=2, label='Prior Belief')
+        ax.fill_between(x, y_prior, color='#7f8c8d', alpha=0.1)
         
-        # Likelihood (scaled for visibility)
-        lik = beta.pdf(x, 1+data_s, 1+data_f)
-        ax.plot(x, lik, linestyle='--', color='blue', alpha=0.6, label='Likelihood (Scaled)')
+        # 2. Likelihood (gestrichelt, da es die Daten repräsentiert)
+        ax.plot(x, y_lik, color='#2980b9', lw=2, linestyle='--', label='Likelihood (Standardized)')
         
-        ax.set_title(f"Update: Prior Mean {a_prior/(a_prior+b_prior):.2f} → Post Mean {a_post/(a_post+b_post):.2f}")
-        ax.set_xlabel("Theta (Probability)")
-        ax.set_ylabel("Density")
-        ax.legend()
+        # 3. Posterior (Hervorgehoben)
+        ax.plot(x, y_post, color='#c0392b', lw=3, label='Posterior')
+        ax.fill_between(x, y_post, color='#c0392b', alpha=0.2)
+        
+        # Mittelwerte für Titel
+        mean_prior = a_prior / (a_prior + b_prior)
+        mean_post = a_post / (a_post + b_post)
+        
+        ax.set_title(f"Bayesian Update: Prior Mean {mean_prior:.2f} $\\rightarrow$ Posterior Mean {mean_post:.2f}", 
+                     fontsize=14, pad=15)
+        ax.set_xlabel("$\\theta$ (Erfolgswahrscheinlichkeit)", fontsize=12)
+        ax.set_ylabel("Dichte", fontsize=12)
+        
+        # Legende sauber positionieren
+        ax.legend(frameon=False, loc='upper right', fontsize=11)
         
         return fig
 
