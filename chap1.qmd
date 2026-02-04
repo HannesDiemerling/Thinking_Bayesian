@@ -3,7 +3,7 @@ title: "1. The Conjugate Balance"
 format: html
 ---
 
-## Prior vs. Likelihood Strength
+## Prior versus Likelihood Strength
 The posterior is the compromise between your prior belief and the data. We use a Beta-Binomial conjugate model here. 
 Observe how `seaborn` renders the density overlaps.
 
