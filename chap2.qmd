@@ -22,12 +22,13 @@ Wir suchen die "beste" Gerade manuell, um zu verstehen, was der Computer tut ("F
 ```{shinylive-python}
 #| standalone: true
 #| viewerHeight: 650
+#| requirements: numpy, matplotlib, scipy
 
 from shiny import App, render, ui
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Fixierte Daten
+# Fixierte Daten (Global definiert für Konsistenz)
 np.random.seed(1)
 x_data = np.random.uniform(2, 8, 15)
 true_a, true_b = 10, 4.5
@@ -55,10 +56,12 @@ app_ui = ui.page_fluid(
 )
 
 def server(input, output, session):
+    # Startwert (Initial Guess)
     click_coords = ui.reactive.Value({'x': 0, 'y': 0}) 
 
     @ui.reactive.Effect
     def _():
+        # Reagiert auf Klick im Plot
         click = input.param_plot_click()
         if click:
             click_coords.set({'x': click['x'], 'y': click['y']})
@@ -66,34 +69,48 @@ def server(input, output, session):
     @render.text
     def score_display():
         curr = click_coords.get()
+        # Vektorisierte Berechnung des Fehlers für den aktuellen Punkt
         y_est = curr['x'] + curr['y'] * x_data
-        # Berechne Fehler
         ssr = np.sum((y_data - y_est)**2)
-        return f"Fehler (SSR): {ssr:.1f}"
+        return f"Fehler (SSR): {ssr:.1f} (Ziel: < 250)"
 
     @render.plot
     def param_plot():
-        # Heatmap Berechnung
-        a_grid = np.linspace(-10, 40, 60)
-        b_grid = np.linspace(-2, 12, 60)
+        # Grid Definition
+        n = 50 # Auflösung des Grids
+        a_grid = np.linspace(-10, 40, n)
+        b_grid = np.linspace(-2, 12, n)
         A, B = np.meshgrid(a_grid, b_grid)
-        Z = np.zeros_like(A)
         
-        for i in range(A.shape[0]):
-            for j in range(A.shape[1]):
-                y_est = A[i,j] + B[i,j] * x_data
-                Z[i,j] = np.exp(-np.sum((y_data - y_est)**2) / 200)
+        # VEKTORISIERUNG STATT LOOPS (Performance Fix!)
+        # Wir nutzen NumPy Broadcasting, um alle Kombinationen gleichzeitig zu rechnen
+        # A, B shape: (n, n) -> erweitern auf (n, n, 1)
+        A_exp = A[:, :, np.newaxis]
+        B_exp = B[:, :, np.newaxis]
+        
+        # Daten shape: (m,) -> erweitern auf (1, 1, m)
+        x_exp = x_data[np.newaxis, np.newaxis, :]
+        y_exp = y_data[np.newaxis, np.newaxis, :]
+        
+        # Berechnung über alle Dimensionen gleichzeitig
+        y_est_grid = A_exp + B_exp * x_exp
+        ssr_grid = np.sum((y_exp - y_est_grid)**2, axis=2)
+        
+        # Likelihood Transformation (für Visualisierung)
+        Z = np.exp(-ssr_grid / 200)
 
         fig, ax = plt.subplots(figsize=(5, 5))
-        ax.contourf(A, B, Z, levels=15, cmap='viridis')
         
-        # Marker
+        # Contour Plot
+        c = ax.contourf(A, B, Z, levels=15, cmap='viridis')
+        
+        # Markierungen
         ax.plot(true_a, true_b, 'gX', markersize=10, label='Wahrheit')
         curr = click_coords.get()
         ax.plot(curr['x'], curr['y'], 'rPc', markersize=12, markeredgecolor='white', label='Ihr Klick')
         
-        ax.set_xlabel("Alpha")
-        ax.set_ylabel("Beta")
+        ax.set_xlabel("Alpha (Intercept)")
+        ax.set_ylabel("Beta (Slope)")
         ax.legend(loc='lower right', frameon=True)
         return fig
 
@@ -102,15 +119,19 @@ def server(input, output, session):
         curr = click_coords.get()
         fig, ax = plt.subplots(figsize=(5, 5))
         
-        # Datenpunkte
-        ax.scatter(x_data, y_data, c='blue', s=50, alpha=0.6)
+        # Plot Daten
+        ax.scatter(x_data, y_data, c='blue', s=50, alpha=0.6, label='Daten')
         
-        # User Linie
+        # Plot User Line
         x_r = np.array([0, 10])
         y_r = curr['x'] + curr['y'] * x_r
         ax.plot(x_r, y_r, color='red', lw=3, label='Ihre Linie')
         
-        # Residuen (Fehlerbalken)
+        # Plot Wahre Linie (Referenz)
+        y_true = true_a + true_b * x_r
+        ax.plot(x_r, y_true, color='green', lw=1, linestyle='--', label='Wahre Linie')
+        
+        # Fehlerbalken (Residuen)
         y_est_points = curr['x'] + curr['y'] * x_data
         ax.vlines(x_data, y_data, y_est_points, color='red', alpha=0.2)
         
