@@ -1,11 +1,27 @@
 ---
-title: "1. The Conjugate Balance"
+title: "1. Prior Predictive Checks"
 format: html
 ---
 
-## Prior versus Likelihood Strength
-The posterior is the compromise between your prior belief and the data. We use a Beta-Binomial conjugate model here. 
-Observe how `seaborn` renders the density overlaps.
+## Zeit: 10 min | Schwierigkeit: Einsteiger
+
+### Theorie: Das Wissen vor den Daten
+In der Bayes-Statistik beginnen wir nicht bei Null. Wir beginnen mit einem "Prior" – einer Annahme darüber, wie die Welt funktioniert, bevor wir auch nur einen Datenpunkt gesehen haben.
+
+Unser Modell ist eine lineare Beziehung:
+$$y_i = \alpha + \beta x_i + \epsilon$$
+
+* **$\alpha$ (Alpha):** Der Schnittpunkt. Wie hoch sind die Verkäufe, wenn wir **nichts** (0€) für Werbung ausgeben?
+* **$\beta$ (Beta):** Die Steigung. Wie viele zusätzliche Verkäufe bringt uns jeder Euro Werbung?
+
+### Das Problem: Unmögliche Welten
+Wenn wir dem Modell sagen "Ich habe keine Ahnung", wählt es oft absurde Parameter. Ein komplett uninformierter Prior würde zulassen, dass Werbung zu negativen Verkäufen führt. Das ist physikalisch unmöglich. Wir nutzen **Prior Predictive Checks**, um solche "unmöglichen Welten" auszusortieren, bevor das Modell rechnet.
+
+### Ihre Aufgabe
+Die Simulation unten zeigt 50 mögliche Realitäten basierend auf Ihren aktuellen Einstellungen.
+1.  **Beobachten:** Aktuell landen viele Linien im roten Bereich ("Forbidden Zone"). Das bedeutet negative Verkäufe.
+2.  **Korrigieren:** Verringern Sie die Unsicherheit (`SD`), sodass die Linien zwar streuen, aber die rote Zone kaum noch berühren.
+3.  **Verstehen:** Verschieben Sie den `Mean` von Beta ins Negative. Macht das Sinn? (Schadet Werbung dem Verkauf?)
 
 ```{shinylive-python}
 #| standalone: true
@@ -14,79 +30,65 @@ Observe how `seaborn` renders the density overlaps.
 from shiny import App, render, ui
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import beta
+from scipy.stats import norm
 
-# Layout für volle Breite und definierte Höhe
 app_ui = ui.page_fluid(
-    ui.layout_sidebar(
-        ui.sidebar(
-            ui.h4("Parameter Wahl"),
-            ui.input_slider("alpha", "Prior Alpha (Erfolge)", 1, 50, 5),
-            ui.input_slider("beta_param", "Prior Beta (Misserfolge)", 1, 50, 5),
-            ui.hr(),
-            ui.input_slider("succ", "Daten: Erfolge", 0, 100, 20),
-            ui.input_slider("fail", "Daten: Misserfolge", 0, 100, 5),
-            width=300
-        ),
-        ui.card(
-            # Wichtig: Explizite Höhe für den Plot setzen, damit er den Platz nutzt
-            ui.output_plot("dist_plot", height="500px")
+    ui.card(
+        ui.card_header("Prior Konfiguration"),
+        ui.layout_columns(
+            ui.div(
+                ui.h5("Parameter Alpha (Basis)"),
+                ui.input_slider("alpha_mean", "Erwartungswert (Mean)", 0, 100, 10),
+                ui.input_slider("alpha_sd", "Unsicherheit (SD)", 0.1, 50, 40),
+                ui.hr(),
+                ui.h5("Parameter Beta (Steigung)"),
+                ui.input_slider("beta_mean", "Erwartungswert (Mean)", -10, 10, 0),
+                ui.input_slider("beta_sd", "Unsicherheit (SD)", 0.1, 20, 15),
+            ),
+            ui.output_plot("prior_plot"),
+            col_widths=(4, 8)
         )
     )
 )
 
 def server(input, output, session):
     @render.plot
-    def dist_plot():
-        # Inputs holen
-        a_prior = input.alpha()
-        b_prior = input.beta_param()
-        data_s = input.succ()
-        data_f = input.fail()
+    def prior_plot():
+        # Parameter holen
+        a_m, a_s = input.alpha_mean(), input.alpha_sd()
+        b_m, b_s = input.beta_mean(), input.beta_sd()
         
-        # Posterior Berechnung
-        a_post = a_prior + data_s
-        b_post = b_prior + data_f
+        # Simulation
+        n_samples = 50
+        np.random.seed(42) 
+        alphas = norm.rvs(a_m, a_s, size=n_samples)
+        betas = norm.rvs(b_m, b_s, size=n_samples)
         
-        # Grid
-        x = np.linspace(0, 1, 500)
+        x = np.linspace(0, 10, 100)
         
-        # Dichten berechnen
-        y_prior = beta.pdf(x, a_prior, b_prior)
-        y_post = beta.pdf(x, a_post, b_post)
-        # Standardisierte Likelihood (Beta(s+1, f+1))
-        y_lik = beta.pdf(x, 1 + data_s, 1 + data_f)
+        fig, ax = plt.subplots(figsize=(10, 6))
         
-        # Plotting Setup
-        fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
-        
-        # Styling: Weniger "Box", mehr Daten
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        ax.grid(True, axis='y', linestyle=':', alpha=0.6)
-        
-        # 1. Prior
-        ax.plot(x, y_prior, color='#7f8c8d', lw=2, label='Prior Belief')
-        ax.fill_between(x, y_prior, color='#7f8c8d', alpha=0.1)
-        
-        # 2. Likelihood (gestrichelt, da es die Daten repräsentiert)
-        ax.plot(x, y_lik, color='#2980b9', lw=2, linestyle='--', label='Likelihood (Standardized)')
-        
-        # 3. Posterior (Hervorgehoben)
-        ax.plot(x, y_post, color='#c0392b', lw=3, label='Posterior')
-        ax.fill_between(x, y_post, color='#c0392b', alpha=0.2)
-        
-        # Mittelwerte für Titel
-        mean_prior = a_prior / (a_prior + b_prior)
-        mean_post = a_post / (a_post + b_post)
-        
-        ax.set_title(f"Bayesian Update: Prior Mean {mean_prior:.2f} $\\rightarrow$ Posterior Mean {mean_post:.2f}", 
-                     fontsize=14, pad=15)
-        ax.set_xlabel("$\\theta$ (Erfolgswahrscheinlichkeit)", fontsize=12)
-        ax.set_ylabel("Dichte", fontsize=12)
-        
-        # Legende sauber positionieren
-        ax.legend(frameon=False, loc='upper right', fontsize=11)
+        # Forbidden Zone
+        ax.fill_between(x, -100, 0, color='#e74c3c', alpha=0.3)
+        ax.text(5, -25, "FORBIDDEN ZONE (y < 0)", 
+                color='#c0392b', fontsize=12, ha='center', fontweight='bold')
+
+        # Linien plotten
+        for a, b in zip(alphas, betas):
+            y = a + b * x
+            # Check: Geht die Linie unter 0?
+            is_bad = np.min(y) < 0
+            # Schlechte Linien rot einfärben
+            color = '#c0392b' if is_bad else 'black'
+            alpha_val = 0.15 if is_bad else 0.3
+            ax.plot(x, y, color=color, alpha=alpha_val, linewidth=1.5)
+            
+        ax.set_ylim(-50, 150)
+        ax.set_xlim(0, 10)
+        ax.set_xlabel("Werbeausgaben (x)")
+        ax.set_ylabel("Verkäufe (y)")
+        ax.set_title(f"Prior Predictive Simulation ({n_samples} Samples)")
+        ax.grid(True, alpha=0.3)
         
         return fig
 

@@ -1,95 +1,121 @@
-
 ---
-title: "3. Convergence Trace"
+title: "3. Posterior Predictive Distribution"
 format: html
 ---
 
-## Visualizing Convergence
-As $N$ increases, the posterior variance collapses. This plot traces the error of the estimated mean against the true mean using a `seaborn` trace plot.
+## Zeit: 20 min | Schwierigkeit: Experte
+
+### Theorie: Zwei Arten der Unsicherheit
+Wenn wir eine Vorhersage treffen, addieren sich zwei Fehlerquellen. Es ist entscheidend, diese zu unterscheiden:
+
+1.  **Epistemische Unsicherheit (Das Wissen):** Wir wissen nicht genau, wo die "wahre" Regressionsgerade liegt, weil wir nur begrenzte Daten haben.
+    * *Visualisierung:* Der schmale blaue Bereich.
+    * *Verhalten:* Schrumpft gegen Null, wenn $N \to \infty$.
+2.  **Aleatorische Unsicherheit (Das Rauschen):** Selbst wenn wir die Gerade perfekt kennen, liegen nicht alle Kunden genau auf der Linie. Es gibt natürliche Varianz ($\sigma$).
+    * *Visualisierung:* Der breite graue Bereich.
+    * *Verhalten:* Bleibt konstant, auch wenn $N \to \infty$.
+
+### Ihre Aufgabe
+Nutzen Sie das Tool, um diese theoretischen Konzepte zu beweisen.
+1.  Aktivieren Sie nur die **Parameter Unsicherheit (Blau)**. Erhöhen Sie $N$ von 10 auf 200. Was passiert mit der Breite des Schlauchs?
+2.  Aktivieren Sie nun zusätzlich die **Vorhersage Unsicherheit (Grau)**. Erhöhen Sie $N$ erneut. Warum wird der graue Bereich nicht schmaler?
+3.  Erhöhen Sie die "Natürliche Streuung". Welcher der beiden Bereiche reagiert darauf?
 
 ```{shinylive-python}
 #| standalone: true
 #| viewerHeight: 600
-from shiny import App, render, ui, reactive
+
+from shiny import App, render, ui
 import numpy as np
-import seaborn as sns
 import matplotlib.pyplot as plt
-import pandas as pd
+from scipy.stats import t
 
 app_ui = ui.page_fluid(
-    ui.layout_sidebar(
-        ui.sidebar(
-            ui.input_action_button("step", "Add 50 Samples", class_="btn-primary"),
-            ui.input_action_button("reset", "Reset", class_="btn-outline-danger"),
-            ui.hr(),
-            ui.output_text_verbatim("info")
-        ),
-        ui.card(
-            ui.output_plot("trace_plot")
+    ui.card(
+        ui.card_header("Posterior Predictive Analyse"),
+        ui.layout_columns(
+            ui.div(
+                ui.h5("Datengenerierung"),
+                ui.input_slider("n_samples", "Anzahl Datenpunkte (N)", 3, 200, 10),
+                ui.input_slider("sigma_true", "Natürliche Streuung (Sigma)", 0.5, 10.0, 3.0),
+                ui.hr(),
+                ui.h5("Intervalle"),
+                ui.input_checkbox("show_epi", "Parameter Unsicherheit (Blau)", True),
+                ui.input_checkbox("show_ale", "Vorhersage Unsicherheit (Grau)", True),
+            ),
+            ui.output_plot("pred_plot"),
+            col_widths=(4, 8)
         )
     )
 )
 
 def server(input, output, session):
-    # State: list of running means
-    state = reactive.Value(pd.DataFrame(columns=['n', 'mean_est', 'upper', 'lower']))
-    true_mu = 2.0
-    true_sigma = 3.0
-    
-    @reactive.Effect
-    @reactive.event(input.step)
-    def _():
-        current_df = state.get()
-        start_n = current_df['n'].max() if not current_df.empty else 0
-        
-        # Simulate batch
-        new_n = start_n + 50
-        # Generate full dataset up to new_n to calculate cumulative mean easier
-        # In prod, optimize this. For workshop, this is fine.
-        data = np.random.normal(true_mu, true_sigma, int(new_n))
-        
-        mu_est = np.mean(data)
-        sem = true_sigma / np.sqrt(new_n) # Standard Error
-        
-        new_row = pd.DataFrame({
-            'n': [new_n], 
-            'mean_est': [mu_est],
-            'upper': [mu_est + 1.96*sem],
-            'lower': [mu_est - 1.96*sem]
-        })
-        
-        state.set(pd.concat([current_df, new_row], ignore_index=True))
-
-    @reactive.Effect
-    @reactive.event(input.reset)
-    def _():
-        state.set(pd.DataFrame(columns=['n', 'mean_est', 'upper', 'lower']))
-
-    @render.text
-    def info():
-        df = state.get()
-        if df.empty: return "No data."
-        last = df.iloc[-1]
-        return f"N={int(last['n'])}, Estimate={last['mean_est']:.3f}"
-
     @render.plot
-    def trace_plot():
-        df = state.get()
-        sns.set_theme(style="darkgrid")
+    def pred_plot():
+        N = input.n_samples()
+        sigma = input.sigma_true()
+        show_epi = input.show_epi()
+        show_ale = input.show_ale()
+        
+        # Daten generieren
+        np.random.seed(42)
+        x = np.random.uniform(0, 10, N)
+        y = 2 + 1.5 * x + np.random.normal(0, sigma, N)
+        
+        # Berechnung (OLS als Proxy für Bayes Mean)
+        X_mat = np.vstack([np.ones(N), x]).T
+        
+        # Fallback für kleine N
+        try:
+            beta_hat = np.linalg.inv(X_mat.T @ X_mat) @ X_mat.T @ y
+            residuals = y - (X_mat @ beta_hat)
+            dof = N - 2
+            mse = np.sum(residuals**2) / dof if dof > 0 else 1.0
+            cov = mse * np.linalg.inv(X_mat.T @ X_mat)
+        except:
+            beta_hat = np.array([0, 0])
+            dof = 1
+            mse = 1
+            cov = np.eye(2)
+
+        # Vorhersage Grid
+        x_grid = np.linspace(0, 12, 100)
+        X_grid = np.vstack([np.ones(100), x_grid]).T
+        y_pred_mean = X_grid @ beta_hat
+        
+        # Intervalle berechnen
+        t_crit = t.ppf(0.975, dof) if dof > 0 else 1.96
+        
+        # Varianz des Mittels (Epistemisch)
+        var_mean = np.sum((X_grid @ cov) * X_grid, axis=1)
+        # Varianz der Vorhersage (Aleatorisch + Epistemisch)
+        var_pred = var_mean + mse
+
         fig, ax = plt.subplots(figsize=(10, 6))
         
-        ax.axhline(true_mu, color='red', linestyle='--', label='True Mean')
+        # Datenpunkte
+        ax.scatter(x, y, color='black', alpha=0.5, label='Datenpunkte')
+        ax.plot(x_grid, y_pred_mean, color='#2980b9', lw=2, label='Modell (Mean)')
         
-        if not df.empty:
-            sns.lineplot(data=df, x='n', y='mean_est', marker='o', color='purple', ax=ax, label='Estimate')
-            ax.fill_between(df['n'], df['lower'], df['upper'], color='purple', alpha=0.2)
+        # Epistemisch (Blau)
+        if show_epi:
+            lower = y_pred_mean - t_crit * np.sqrt(var_mean)
+            upper = y_pred_mean + t_crit * np.sqrt(var_mean)
+            ax.fill_between(x_grid, lower, upper, color='#2980b9', alpha=0.4, label='Unsicherheit (Mittel)')
+            
+        # Aleatorisch (Grau)
+        if show_ale:
+            lower = y_pred_mean - t_crit * np.sqrt(var_pred)
+            upper = y_pred_mean + t_crit * np.sqrt(var_pred)
+            ax.fill_between(x_grid, lower, upper, color='#7f8c8d', alpha=0.2, label='Unsicherheit (Vorhersage)')
+
+        ax.set_ylim(-10, 35)
+        ax.set_xlabel("Input Variable")
+        ax.set_title(f"Daten N={N}, Noise={sigma}")
+        ax.legend(loc='upper left')
+        ax.grid(True, linestyle=':', alpha=0.5)
         
-        ax.set_ylim(true_mu - 2, true_mu + 2)
-        ax.set_ylabel("Parameter Estimate")
-        ax.set_xlabel("Sample Size (N)")
-        ax.set_title("Convergence of Posterior Mean")
         return fig
 
 app = App(app_ui, server)
-
 ```
