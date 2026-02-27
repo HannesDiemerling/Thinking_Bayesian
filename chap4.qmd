@@ -1,0 +1,110 @@
+---
+title: "4. Die Likelihood"
+format: html
+---
+
+## Zeit: 15 min | Schwierigkeit: Einsteiger
+
+### Theorie: Die Passgenauigkeit von Daten und Hypothese
+In der Statistik (Aber auch im echten Leben) werten wir reale Beobachtungen aus. Die Likelihood, ausgedrückt als $P(D|\theta)$, bewertet, wie gut gesammelte Daten $D$ zu einer bestimmten theoretischen Annahme $\theta$ passen. Sie beantwortet die Frage: Wie wahrscheinlich ist es, exakt die vorliegenden Daten $D$ zu beobachten, falls die spezifische Hypothese $\theta$ wahr wäre?
+
+In der klassischen Statistik ist die Maximum Likelihood Methode das zentrale Werkzeug. Man sucht exakt den Parameter $\theta$, der die beobachteten Daten $D$ am wahrscheinlichsten macht (Fisher, 1922). In der bayesianischen Statistik nutzen wir die Likelihood als entscheidenden Filter. Dieser bestimmt, welche theoretischen Vorannahmen durch die reale Beobachtung bestätigt oder widerlegt werden.
+
+### Beispiel Deutsche Bahn: Variablen in der Realität
+Du dokumentierst an fünf aufeinanderfolgenden Tagen die Verspätung des ICE. Die Werte in Minuten lauten: 5, 12, 8, 15 und 10. 
+
+Diese fixierten Werte sind deine Daten $D$. Sie verändern sich nicht mehr.
+
+Wir testen nun verschiedene Hypothesen über die tatsächliche durchschnittliche Verspätung auf dieser Strecke. Diese angenommene durchschnittliche Verspätung ist dein Parameter $\theta$. 
+
+Nehmen wir an, die Bahn fährt im Durchschnitt mit exakt 0 Minuten Verspätung ($\theta = 0$). Wie wahrscheinlich ist es, in der Realität permanent Züge mit 10 oder 15 Minuten Verspätung zu beobachten ($D$), wenn die Züge eigentlich pünktlich sind? Extrem unwahrscheinlich. Die Likelihood $P(D|\theta)$ für die Hypothese $\theta = 0$ ist praktisch null. 
+
+Verschieben wir die Hypothese auf einen Durchschnitt von 10 Minuten Verspätung ($\theta = 10$). Plötzlich passen die realen Datenpunkte $D$ perfekt zu unserer Annahme. Der Likelihood Wert $P(D|\theta)$ schießt in die Höhe.
+
+### Deine Aufgabe
+In der Applikation siehst du die fixierten Datenpunkte $D$ als rote Markierungen auf der horizontalen Achse.
+
+1. **Beobachten:** Bewege den Schieberegler für deine Hypothese $\theta$ (die blaue Kurve). Die Kurve zeigt, wo die Datenpunkte liegen müssten, wenn deine Hypothese stimmt.
+2. **Analysieren:** Setze die Hypothese $\theta$ auf 2 Minuten. Die Wahrscheinlichkeit, die roten Datenpunkte unter dieser blauen Glocke zu finden, ist extrem gering. Der Likelihood Wert im unteren Diagramm fällt ab.
+3. **Maximieren:** Finde den Maximum Likelihood Schätzer manuell. Bewege den Regler so lange, bis die blaue Kurve die roten Punkte perfekt abdeckt und der schwarze Punkt im unteren Diagramm seinen absoluten Höhepunkt erreicht.
+
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 650
+
+from shiny import App, render, ui
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+data_points = np.array([5, 12, 8, 15, 10])
+
+app_ui = ui.page_fluid(
+    ui.card(
+        ui.card_header("Likelihood: Finde die passendste Hypothese Theta"),
+        ui.layout_columns(
+            ui.div(
+                ui.h5("Hypothese Theta testen"),
+                ui.input_slider("hypo_mean", "Wahre durchschnittliche Verspätung", 0, 20, 2, step=0.5),
+                ui.hr(),
+                ui.p("Bewege den Regler. Finde das Theta, das die roten Datenpunkte D am wahrscheinlichsten macht."),
+            ),
+            ui.output_plot("likelihood_plot"),
+            col_widths=(4, 8)
+        )
+    )
+)
+
+def server(input, output, session):
+    @render.plot
+    def likelihood_plot():
+        mu_hypo = input.hypo_mean()
+        sigma_fixed = 4.0 
+        
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), gridspec_kw={'height_ratios': [2, 1]})
+        
+        x_vals = np.linspace(-5, 25, 200)
+        y_vals = norm.pdf(x_vals, mu_hypo, sigma_fixed)
+        
+        ax1.plot(x_vals, y_vals, color='#2980b9', linewidth=2, label=f"Hypothese Theta = {mu_hypo}")
+        ax1.fill_between(x_vals, 0, y_vals, color='#3498db', alpha=0.2)
+        
+        ax1.scatter(data_points, np.zeros_like(data_points), color='#c0392b', s=100, zorder=5, label="Daten D")
+        
+        for dp in data_points:
+            likelihood_of_dp = norm.pdf(dp, mu_hypo, sigma_fixed)
+            ax1.vlines(dp, 0, likelihood_of_dp, color='#e74c3c', linestyle='dotted', linewidth=1.5)
+            
+        ax1.set_title("Daten D unter deiner Hypothese Theta")
+        ax1.set_xlim(-5, 25)
+        ax1.set_ylim(-0.01, 0.12)
+        ax1.set_ylabel("Wahrscheinlichkeitsdichte")
+        ax1.legend(loc="upper right")
+        ax1.spines['top'].set_visible(False)
+        ax1.spines['right'].set_visible(False)
+        
+        possible_mus = np.linspace(0, 20, 100)
+        likelihoods = [np.prod(norm.pdf(data_points, m, sigma_fixed)) for m in possible_mus]
+        
+        likelihoods = np.array(likelihoods) / np.max(likelihoods)
+        
+        current_likelihood = np.prod(norm.pdf(data_points, mu_hypo, sigma_fixed))
+        current_likelihood_norm = current_likelihood / np.max([np.prod(norm.pdf(data_points, m, sigma_fixed)) for m in possible_mus])
+        
+        ax2.plot(possible_mus, likelihoods, color='#2c3e50', linewidth=2)
+        ax2.scatter([mu_hypo], [current_likelihood_norm], color='black', s=100, zorder=5)
+        
+        ax2.set_title("Gesamte Likelihood P(D|Theta)")
+        ax2.set_xlabel("Mögliche Werte für Theta")
+        ax2.set_ylabel("Likelihood Wert")
+        ax2.set_xlim(0, 20)
+        ax2.set_ylim(-0.1, 1.1)
+        ax2.axvline(10, color='grey', linestyle='dotted', alpha=0.5) 
+        ax2.spines['top'].set_visible(False)
+        ax2.spines['right'].set_visible(False)
+        
+        plt.tight_layout()
+        return fig
+
+app = App(app_ui, server)
+```
