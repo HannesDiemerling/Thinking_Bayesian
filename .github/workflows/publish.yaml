@@ -32,11 +32,11 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Force Upgrade Shinylive
+      - name: Upgrade and Setup Shinylive
         run: |
           pip uninstall -y shinylive
-          pip install shinylive>=0.10.7
-          shinylive install
+          pip install "shinylive>=0.11.0"
+          python3 -m shinylive install
           quarto add quarto-ext/shinylive --no-prompt
 
       - name: Render Quarto Project
