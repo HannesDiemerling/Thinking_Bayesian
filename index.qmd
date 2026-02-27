@@ -1,14 +1,33 @@
 ---
-title: "Workshop Overview"
+title: "Hello World"
 ---
 
-## Bayesian Statistics: The Misconceptions
+## Bayesianische Statistik: Dein Einstieg
 
-This workshop addresses common errors in Bayesian reasoning using interactive Python simulations.
+Dieser interaktive Workshop bietet dir einen fundierten Einstieg in die bayesianische Statistik. Er ist für alle konzipiert, die statistische Grundkenntnisse mitbringen und moderne, datengesteuerte Analysemethoden praktisch erlernen möchten.
 
-**Stack:**
-* **Engine:** Quarto + Shinylive (WASM)
-* **Visualization:** Seaborn + Matplotlib
-* **CI/CD:** GitHub Actions
+Solltest du diesen Workshop im Rahmen einer begleiteten Veranstaltung besuchen, koordinieren die Kursleiter das weitere Vorgehen mit dir. Wenn du den Kurs eigenständig absolvierst, führt dich dieser Leitfaden durch die Struktur und die optimale Nutzung der Inhalte.
 
-Select a chapter on the left to begin.
+---
+
+### Technische Grundlagen
+Die interaktiven Anwendungen basieren auf Python und Shinylive. Sie werden direkt in deinem Browser ausgeführt, sodass keine Softwareinstallation erforderlich ist. Sämtliche Daten und Berechnungen verbleiben lokal auf deinem Rechner.
+
+Beim ersten Aufruf initialisiert der Browser im Hintergrund eine Python-Laufzeitumgebung. Dieser Vorgang kann einen Moment dauern, stellt jedoch sicher, dass alle Prozesse sicher und privat auf deinem Endgerät ablaufen.
+
+---
+
+### Navigation und Struktur
+Über das Menü auf der linken Seite gelangst du zu den einzelnen Kapiteln. Die Inhalte bauen thematisch aufeinander auf, von den fundamentalen Prinzipien bis hin zu fortgeschrittenen Modellen.
+
+Zur besseren Planung findest du bei jedem Abschnitt Angaben zum Schwierigkeitsgrad und zur voraussichtlichen Bearbeitungsdauer. Obwohl jedes Kapitel in sich abgeschlossen ist und separat bearbeitet werden kann, ist für ein tieferes Verständnis das Durchlaufen der empfohlenen Reihenfolge ratsam.
+
+---
+
+### Aufbau der Aufgaben
+Jedes Kapitel kombiniert Theorie mit interaktiven Aufgaben. Diese Praxisbausteine laden dich dazu ein, die gelernten Konzepte unmittelbar anzuwenden und statistische Zusammenhänge eigenständig zu explorieren.
+
+---
+
+### Feedback und Unterstützung
+Deine Rückmeldungen helfen dabei, dieses Lernangebot stetig zu optimieren. Bei inhaltlichen Fragen oder Anregungen kannst du dich jederzeit an die Kursleitung wenden oder die Kontaktmöglichkeiten auf dieser Plattform nutzen.
