@@ -29,15 +29,14 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
+      - name: Preload Shinylive Assets
+        run: python -c "from shinylive._assets import ensure_shinylive_assets; ensure_shinylive_assets()"
+
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Upgrade and Setup Shinylive
-        run: |
-          pip uninstall -y shinylive
-          pip install "shinylive>=0.11.0"
-          python3 -m shinylive install
-          quarto add quarto-ext/shinylive --no-prompt
+      - name: Install Quarto Extension
+        run: quarto add quarto-ext/shinylive --no-prompt
 
       - name: Render Quarto Project
         uses: quarto-dev/quarto-actions/render@v2
