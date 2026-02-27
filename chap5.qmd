@@ -1,0 +1,109 @@
+---
+title: "5. Der Posterior"
+format: html
+---
+
+## Zeit: 15 min | Schwierigkeit: Einsteiger
+
+### Theorie: Die Synthese von Vorwissen und Fakten
+In der bayesianischen Statistik ist die Berechnung des Posteriors $P(\theta|D)$ das Ziel jeder Berechnung. Der Posterior repräsentiert deine aktualisierte Überzeugung, dein basierend auf den neuen Daten aktualisierten Vorurteile. Er ist das logische Resultat, wenn du dein theoretisches Vorwissen (den Prior $P(\theta)$) mit den empirischen Fakten (der Likelihood $P(D|\theta)$) kombinierst.
+
+Das Bayes Theorem fungiert hierbei als mathematischer Filter. Der Posterior $P(\theta|D)$ liefert dir keine isolierte Zahl als Punktschätzung oder einen schwellwert, sondern eine vollständige Wahrscheinlichkeitsverteilung für deinen Parameter $\theta$ unter strikter Berücksichtigung der gesammelten Daten $D$.
+
+Ein massiver Vorteil dieser vollständigen Verteilung ist die direkte Berechnung von Glaubwürdigkeitsintervallen (Credible Intervals). Klassische Konfidenzintervalle sind konzeptionell sperrig und werden in der Praxis fast immer falsch interpretiert. Das bayesianische Glaubwürdigkeitsintervall liefert stattdessen exakt die Aussage, die Menschen (Und maschinen in gewisser weise auch) intuitiv suchen: "Mit 95 % Wahrscheinlichkeit liegt der wahre Wert $\theta$ in genau diesem Bereich" (McElreath, 2020).
+
+### Beispiel Deutsche Bahn: Die aktualisierte Realität
+Du möchtest die wahre durchschnittliche Verspätung $\theta$ auf deiner Pendlerstrecke präzise bestimmen. 
+
+Dein Prior $P(\theta)$ spiegelt deine bisherige Erfahrung wider. Du gehst fest von 15 Minuten durchschnittlicher Verspätung aus (Wir sind hier ja Optimisten).
+Die Daten $D$ sind deine Messungen der letzten Woche. Du hast fünf Züge gestoppt. Diese waren im Schnitt nur 10 Minuten zu spät. Die Likelihood $P(D|\theta)$ quantifiziert, wie diese harten Beobachtungen zu verschiedenen Werten für $\theta$ passen.
+
+Der Posterior $P(\theta|D)$ ist nun deine neue, datenbasierte Realität. Er liegt als Kompromiss irgendwo zwischen deinem Prior (15 Minuten) und den gesammelten Daten (10 Minuten). Wie stark sich der Posterior den Daten anpasst, hängt ausschließlich davon ab, wie sicher dein Prior formuliert war und wie erdrückend die Menge der neuen Daten ist.
+
+### Deine Aufgabe
+Die interaktive Abbildung zeigt dir drei Kurven. Den Prior $P(\theta)$ in Grau, die aus den Daten abgeleitete Likelihood $P(D|\theta)$ in Rot und den resultierenden Posterior $P(\theta|D)$ in Violett. Der schattierte Bereich unter der violetten Kurve markiert das 95 % Glaubwürdigkeitsintervall.
+
+1. **Beobachten:** Bei einem unsicheren Prior (großer SD Wert) dominieren die roten Daten $D$. Der violette Posterior $P(\theta|D)$ verschmilzt fast exakt mit der roten Kurve.
+2. **Vorwissen erzwingen:** Mache deinen Prior extrem sicher. Reduziere die Unsicherheit (SD) auf einen minimalen Wert. Beobachte, wie der graue Prior den violetten Posterior förmlich an sich reißt, völlig unbeeindruckt von den roten Daten.
+3. **Interpretation:** Lies das Glaubwürdigkeitsintervall auf der horizontalen Achse ab. Du kannst nun mathematisch unangreifbar behaupten, in welchem exakten Zeitfenster sich die wahre durchschnittliche Verspätung $\theta$ höchstwahrscheinlich bewegt.
+
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 650
+
+from shiny import App, render, ui
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+# Fixierte Daten D: 5 Zuege, Durchschnitt 10 Minuten, Standardabweichung 4
+data_n = 5
+data_mean = 10.0
+data_sd = 4.0
+data_se = data_sd / np.sqrt(data_n)
+
+app_ui = ui.page_fluid(
+    ui.card(
+        ui.card_header("Posterior Berechnung: Prior und Daten fusionieren"),
+        ui.layout_columns(
+            ui.div(
+                ui.h5("Prior P(Theta) konfigurieren"),
+                ui.input_slider("prior_mean", "Erwartete Verspätung", 0, 30, 15, step=1),
+                ui.input_slider("prior_sd", "Unsicherheit (SD)", 0.5, 15, 8, step=0.5),
+                ui.hr(),
+                ui.p("Die Daten D sind fixiert (Rote Kurve: 5 Züge, Schnitt 10 Min). Ändere den Prior und beobachte den violetten Posterior."),
+            ),
+            ui.output_plot("posterior_plot"),
+            col_widths=(4, 8)
+        )
+    )
+)
+
+def server(input, output, session):
+    @render.plot
+    def posterior_plot():
+        p_mean = input.prior_mean()
+        p_sd = input.prior_sd()
+        
+        # Bayesian Updating fuer Normalverteilungen (Conjugate Math)
+        prior_var = p_sd**2
+        data_var = data_se**2
+        
+        post_var = 1.0 / ((1.0 / prior_var) + (1.0 / data_var))
+        post_mean = post_var * ((p_mean / prior_var) + (data_mean / data_var))
+        post_sd = np.sqrt(post_var)
+        
+        x_vals = np.linspace(-5, 35, 400)
+        
+        prior_y = norm.pdf(x_vals, p_mean, p_sd)
+        like_y = norm.pdf(x_vals, data_mean, data_se)
+        post_y = norm.pdf(x_vals, post_mean, post_sd)
+        
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        ax.plot(x_vals, prior_y, color='#7f8c8d', linewidth=2, linestyle='dotted', label='Prior P(Theta)')
+        ax.plot(x_vals, like_y, color='#e74c3c', linewidth=2, linestyle='dashed', label='Likelihood P(D|Theta)')
+        ax.plot(x_vals, post_y, color='#8e44ad', linewidth=3, label='Posterior P(Theta|D)')
+        
+        # 95 Prozent Glaubwuerdigkeitsintervall berechnen
+        ci_lower, ci_upper = norm.interval(0.95, loc=post_mean, scale=post_sd)
+        
+        # Intervall schattieren
+        x_fill = np.linspace(ci_lower, ci_upper, 100)
+        y_fill = norm.pdf(x_fill, post_mean, post_sd)
+        ax.fill_between(x_fill, 0, y_fill, color='#8e44ad', alpha=0.3, label='95 % Glaubwürdigkeitsintervall')
+        
+        ax.set_title("Aktualisierung deiner Überzeugung")
+        ax.set_xlabel("Wahre durchschnittliche Verspätung Theta")
+        ax.set_ylabel("Wahrscheinlichkeitsdichte")
+        ax.set_xlim(-5, 35)
+        ax.set_ylim(0, max(np.max(like_y), np.max(post_y), np.max(prior_y)) * 1.1)
+        
+        ax.legend(loc="upper right")
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        
+        return fig
+
+app = App(app_ui, server)
+```
