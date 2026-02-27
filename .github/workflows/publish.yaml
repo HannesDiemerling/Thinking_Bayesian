@@ -32,9 +32,9 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Install Shinylive
+      - name: Install and Setup Shinylive
         run: |
-          pip install shinylive
+          pip install -U shinylive
           shinylive install
           quarto add quarto-ext/shinylive --no-prompt
 
