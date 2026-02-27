@@ -1,0 +1,92 @@
+---
+title: "6. Vorhersagen"
+format: html
+---
+
+## Zeit: 15 min | Schwierigkeit: Einfach
+
+### Theorie: Die Zukunft berechnen
+Wer sich seiner Vergangenheit nicht erinnert, ist dazu verdammt, sie zu wiederholen. Wer sich seiner Gegenwart nicht bewusst ist, ist dazu verdammt, sie zu verpassen. Wer sich seiner Zukunft nicht bewusst ist, ist dazu verdammt, sie zu fürchten.
+
+Unser Ziel ist die Vorhersage der Zukunft, hierzu bedienen wir uns unseres Priors (Die Vergangenheit) und unserer erhobenen Daten (Die Gegenwart), um unsere Posteriori (Zukunft) vorherzusagen. Die Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ ist das bayesianische Werkzeug, um neue, noch ungesehene Datenpunkte $\tilde{y}$ vorherzusagen, basierend auf den bereits gesammelten Daten $D$.
+
+Klassische Regressionsmodelle berechnen oft nur einen einzelnen Punktschätzer für einen Parameter und addieren einen festen Fehlerterm. Das ignoriert fundamentale Unsicherheiten. Die bayesianische Methode ist mathematisch strikter. Sie nutzt deine gesamte Posterior Verteilung $P(\theta|D)$ und simuliert daraus die Zukunft. 
+
+Dabei kombiniert sie zwei völlig unterschiedliche Arten von Unsicherheit: Die epistemische Unsicherheit (Wie sicher bist du dir über den wahren Parameter $\theta$?) und die aleatorische Unsicherheit (Das natürliche Rauschen der realen Welt). Das Resultat ist eine Vorhersage, die echte Unsicherheiten nicht künstlich glattbügelt, sondern ehrlich ausweist (McElreath, 2020).
+
+### Beispiel Deutsche Bahn: Dein Zug morgen früh
+Du hast deine historischen Daten $D$ ausgewertet. Deine Posterior Verteilung $P(\theta|D)$ sagt dir nun, dass die durchschnittliche Verspätung $\theta$ auf deiner Pendlerstrecke bei etwa 10 Minuten liegt. 
+
+Aber der Durchschnitt bringt dich morgen früh nicht pünktlich zur Arbeit (Denn vertrauen ist gut, aber kontrolle...). Du willst die Verspätung deines exakten Zuges morgen früh wissen. Dieser eine zukünftige Zug ist dein neuer Datenpunkt $\tilde{y}$.
+
+Selbst wenn du den wahren Durchschnitt $\theta$ exakt auf die Sekunde kennen würdest, wird dein Zug morgen davon abweichen. Züge unterliegen einer natürlichen Schwankung durch das Wetter, technische Defekte oder blockierte Türen. Die Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ nimmt deine bestehende Unsicherheit über den Durchschnitt $\theta$ und addiert das unvorhersehbare tägliche Chaos der realen Welt. Das Ergebnis ist eine Kurve, die dir genau sagt, mit welcher Wahrscheinlichkeit du morgen exakt $\tilde{y}$ Minuten zu spät kommst.
+
+### Deine Aufgabe
+Die Applikation zeigt dir die violette Posterior Verteilung $P(\theta|D)$ für den Durchschnitt $\theta$ und die orange Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ für deinen spezifischen Zug morgen $\tilde{y}$.
+
+1. **Beobachten:** Die orange Vorhersagekurve für morgen $\tilde{y}$ ist immer breiter als die violette Kurve für den Durchschnitt $\theta$. Ein Einzelfall schwankt immer massiver als der langfristige Durchschnitt.
+2. **Das Systemrauschen erhöhen:** Erhöhe die natürliche Schwankung der Züge (das aleatorische Rauschen). Die orange Kurve wird extrem breit. Präzise Vorhersagen für Einzelfahrten werden unmöglich, selbst wenn der Durchschnitt $\theta$ perfekt geschätzt ist.
+3. **Parameter Unsicherheit erhöhen:** Mache deine Schätzung für $\theta$ unsicherer. Beide Kurven werden breiter. Dein fehlendes Wissen über das System überträgt sich direkt auf die fehlerhafte Vorhersage deines Zuges morgen.
+
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 650
+
+from shiny import App, render, ui
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+app_ui = ui.page_fluid(
+    ui.card(
+        ui.card_header("Vorhersage: Dein Zug y neu morgen"),
+        ui.layout_columns(
+            ui.div(
+                ui.h5("Wissen über den Durchschnitt Theta"),
+                ui.input_slider("post_mean", "Geschätzter Durchschnitt Theta", 0, 30, 10),
+                ui.input_slider("post_sd", "Unsicherheit über Theta", 0.1, 10, 2),
+                ui.hr(),
+                ui.h5("Chaos der realen Welt"),
+                ui.input_slider("noise_sd", "Natürliche Schwankung der Züge", 1, 20, 5),
+            ),
+            ui.output_plot("pred_plot"),
+            col_widths=(4, 8)
+        )
+    )
+)
+
+def server(input, output, session):
+    @render.plot
+    def pred_plot():
+        mu = input.post_mean()
+        sd_theta = input.post_sd()
+        sd_noise = input.noise_sd()
+        
+        # Varianz der Vorhersage ist die Summe aus Parameter Varianz und System Varianz
+        sd_pred = np.sqrt(sd_theta**2 + sd_noise**2)
+        
+        x_vals = np.linspace(-20, 50, 400)
+        post_y = norm.pdf(x_vals, mu, sd_theta)
+        pred_y = norm.pdf(x_vals, mu, sd_pred)
+        
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        ax.plot(x_vals, post_y, color='#8e44ad', linewidth=2, label='Posterior P(Theta|D)')
+        ax.fill_between(x_vals, 0, post_y, color='#8e44ad', alpha=0.3)
+        
+        ax.plot(x_vals, pred_y, color='#e67e22', linewidth=3, label='Vorhersage P(y neu|D)')
+        
+        ax.set_title("Vorhersage für den neuen Datenpunkt y neu")
+        ax.set_xlabel("Verspätung in Minuten")
+        ax.set_ylabel("Wahrscheinlichkeitsdichte")
+        ax.set_xlim(-20, 50)
+        ax.set_ylim(0, max(np.max(post_y), np.max(pred_y)) * 1.1)
+        
+        ax.legend(loc="upper right")
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        
+        return fig
+
+app = App(app_ui, server)
+```
