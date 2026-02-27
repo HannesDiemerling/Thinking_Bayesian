@@ -1,49 +1,51 @@
 ---
-title: "3. Posterior Predictive Distribution"
+title: "3. Der Prior"
 format: html
 ---
 
-## Zeit: 20 min | Schwierigkeit: Experte
+## Zeit: 15 min | Schwierigkeit: Einfach
 
-### Theorie: Zwei Arten der Unsicherheit
-Wenn wir eine Vorhersage treffen, addieren sich zwei Fehlerquellen. Es ist entscheidend, diese zu unterscheiden:
+### Theorie: Die Quantifizierung von Vorwissen
+Ob Student, Wissenschaftler, Dozent oder AGI, wir alle haben ein vorstellung, wie die Welt (Ob real oder virtuel) funktioniert. Dieses Vorwissen (In manchen kontexten auch Vorurteile) gießen wir in der bayesianischen Statistik in eine mathematische Form. Wir nennen dieses Formalisierte Vorwissen den Prior, ausgedrückt als $P(\theta)$.
 
-1.  **Epistemische Unsicherheit (Das Wissen):** Wir wissen nicht genau, wo die "wahre" Regressionsgerade liegt, weil wir nur begrenzte Daten haben.
-    * *Visualisierung:* Der schmale blaue Bereich.
-    * *Verhalten:* Schrumpft gegen Null, wenn $N \to \infty$.
-2.  **Aleatorische Unsicherheit (Das Rauschen):** Selbst wenn wir die Gerade perfekt kennen, liegen nicht alle Kunden genau auf der Linie. Es gibt natürliche Varianz ($\sigma$).
-    * *Visualisierung:* Der breite graue Bereich.
-    * *Verhalten:* Bleibt konstant, auch wenn $N \to \infty$.
+Der Prior zwingt uns, unsere Annahmen transparent zu machen. Es gibt zwei Hauptarten von Priors:
+* **Uninformative Priors:** Sie gehen davon aus, dass alle möglichen Werte eines Parameters gleich wahrscheinlich sind, und repräsentieren keinerlei Vorwissen. Ein klassisches Beispiel ist der flache Prior. Hier ist es wichtig zu verstehen, dass „uninformativ“ nicht gleichbedeutend mit „neutral“ ist. Ein uninformativer Prior kann in bestimmten Kontexten tatsächlich starke Annahmen implizieren.
+* **Informative Priors:** Sie nutzen bestehendes Wissen aus früheren Studien oder logischen Überlegungen, um extreme und unrealistische Werte auszuschließen. Ein typisches Beispiel ist der Weakly Informative Prior, der den Parameterbereich grob eingrenzt (z. B. auf biologisch plausible Werte), ohne das Ergebnis durch zu starke Vorannahmen zu dominieren. Er wirkt wie eine Regularisierung, die verhindert, dass das Modell durch kleine Stichproben oder Ausreißer in absurde Richtungen abdriftet (Gelman et al., 2013).
 
-### Ihre Aufgabe
-Nutzen Sie das Tool, um diese theoretischen Konzepte zu beweisen.
-1.  Aktivieren Sie nur die **Parameter Unsicherheit (Blau)**. Erhöhen Sie $N$ von 10 auf 200. Was passiert mit der Breite des Schlauchs?
-2.  Aktivieren Sie nun zusätzlich die **Vorhersage Unsicherheit (Grau)**. Erhöhen Sie $N$ erneut. Warum wird der graue Bereich nicht schmaler?
-3.  Erhöhen Sie die "Natürliche Streuung". Welcher der beiden Bereiche reagiert darauf?
+Kritiker werfen der bayesianischen Statistik oft vor, durch Priors Subjektivität in die Wissenschaft zu bringen. Die moderne statistische Literatur entgegnet, dass exakt das Gegenteil der Fall ist. Der Prior macht inhärente und ohnehin vorhandene subjektive Annahmen mathematisch angreifbar und transparent (Gelman et al., 2013). Er zwingt uns, unsere Vorurteile offen zu legen und zu reflektieren, anstatt sie im Dunkeln zu belassen. In der Praxis können informative Priors die Stabilität von Modellen erheblich verbessern, insbesondere bei kleinen Stichproben oder komplexen Modellen, und so zu robusteren und realistischeren Ergebnissen führen.
+
+### Beispiel Deutsche Bahn: Die erwartete Verspätung
+Du möchtest die durchschnittliche Verspätung des ICE von Berlin nach München schätzen. Bevor du auch nur auf den Fahrplan schaust, hast du bereits leiderprobtes Vorwissen. 
+
+Ein uninformativer Prior würde annehmen, dass jede Verspätung gleich wahrscheinlich ist. Das ist unlogisch, da es extrem unwahrscheinlich ist, dass die Deutsche Bahn mit 0 Minuten verspätung (Oder gar überpünktlich) einfährt. Ein informativer Prior konzentriert die Wahrscheinlichkeitsmasse auf realistische Werte. Du weißt aus Erfahrung, dass Züge seltenst pünktlich sind und die durchschnittliche Verspätung oft im Bereich von wenigen bis zu einigen dutzend Minuten liegt .
+### Deine Aufgabe
+Die folgende Applikation erlaubt es dir, deinen eigenen Frust mathematisch exakt als Prior zu modellieren.
+
+1. **Beobachten:** Belasse die Startwerte. Der Graph zeigt absolute Ahnungslosigkeit. Eine Verfrühung von 30 Minuten (links im roten Bereich) wird als fast genauso wahrscheinlich erachtet wie eine leichte Verspätung.
+2. **Erfahrung einfließen lassen:** Du bist Realist. Setze den Erwartungswert auf 15 Minuten Verspätung.
+3. **Unsicherheit reduzieren:** Da du oft fährst, bist du dir deiner Sache sicher. Reduziere die Unsicherheit (SD) so weit, bis der Bereich links von der Nulllinie (Überpünktlichkeit) praktisch keine Wahrscheinlichkeitsmasse mehr abbekommt. Du hast soeben einen fundierten, informativen Prior gebaut.
 
 ```{shinylive-python}
 #| standalone: true
-#| viewerHeight: 600
+#| viewerHeight: 650
 
 from shiny import App, render, ui
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import t
+from scipy.stats import norm
 
 app_ui = ui.page_fluid(
     ui.card(
-        ui.card_header("Posterior Predictive Analyse"),
+        ui.card_header("Prior Gestaltung: Der Bahn-Frust in Zahlen"),
         ui.layout_columns(
             ui.div(
-                ui.h5("Datengenerierung"),
-                ui.input_slider("n_samples", "Anzahl Datenpunkte (N)", 3, 200, 10),
-                ui.input_slider("sigma_true", "Natürliche Streuung (Sigma)", 0.5, 10.0, 3.0),
+                ui.h5("Prior Parameter konfigurieren"),
+                ui.input_slider("mean", "Erwartete Verspätung (Minuten)", -30, 120, 0),
+                ui.input_slider("sd", "Unsicherheit (SD)", 1, 100, 80),
                 ui.hr(),
-                ui.h5("Intervalle"),
-                ui.input_checkbox("show_epi", "Parameter Unsicherheit (Blau)", True),
-                ui.input_checkbox("show_ale", "Vorhersage Unsicherheit (Grau)", True),
+                ui.p("Ein hoher SD-Wert spiegelt vollkommene Ahnungslosigkeit wider. Ein niedriger SD-Wert zeigt deine harte Pendlererfahrung."),
             ),
-            ui.output_plot("pred_plot"),
+            ui.output_plot("prior_plot"),
             col_widths=(4, 8)
         )
     )
@@ -51,69 +53,36 @@ app_ui = ui.page_fluid(
 
 def server(input, output, session):
     @render.plot
-    def pred_plot():
-        N = input.n_samples()
-        sigma = input.sigma_true()
-        show_epi = input.show_epi()
-        show_ale = input.show_ale()
+    def prior_plot():
+        mu = input.mean()
+        sigma = input.sd()
         
-        # Daten generieren
-        np.random.seed(42)
-        x = np.random.uniform(0, 10, N)
-        y = 2 + 1.5 * x + np.random.normal(0, sigma, N)
+        x = np.linspace(-60, 150, 500)
+        y = norm.pdf(x, mu, sigma)
         
-        # Berechnung (OLS als Proxy für Bayes Mean)
-        X_mat = np.vstack([np.ones(N), x]).T
+        fig, ax = plt.subplots(figsize=(10, 5))
         
-        # Fallback für kleine N
-        try:
-            beta_hat = np.linalg.inv(X_mat.T @ X_mat) @ X_mat.T @ y
-            residuals = y - (X_mat @ beta_hat)
-            dof = N - 2
-            mse = np.sum(residuals**2) / dof if dof > 0 else 1.0
-            cov = mse * np.linalg.inv(X_mat.T @ X_mat)
-        except:
-            beta_hat = np.array([0, 0])
-            dof = 1
-            mse = 1
-            cov = np.eye(2)
-
-        # Vorhersage Grid
-        x_grid = np.linspace(0, 12, 100)
-        X_grid = np.vstack([np.ones(100), x_grid]).T
-        y_pred_mean = X_grid @ beta_hat
+        # Unmöglichen Bereich (zu früh) rot hinterlegen
+        ax.axvspan(-60, 0, color='#e74c3c', alpha=0.1)
+        ax.text(-30, 0.04, 'Überpünktlich\n(Fantasieland)', color='#c0392b', ha='center', va='center', fontweight='bold')
         
-        # Intervalle berechnen
-        t_crit = t.ppf(0.975, dof) if dof > 0 else 1.96
+        # Prior zeichnen
+        ax.plot(x, y, color='#2c3e50', linewidth=2.5)
+        ax.fill_between(x, 0, y, color='#34495e', alpha=0.3)
         
-        # Varianz des Mittels (Epistemisch)
-        var_mean = np.sum((X_grid @ cov) * X_grid, axis=1)
-        # Varianz der Vorhersage (Aleatorisch + Epistemisch)
-        var_pred = var_mean + mse
-
-        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.set_title("Deine Prior Verteilung $P(\\theta)$")
+        ax.set_xlabel("Erwartete Verspätung in Minuten")
+        ax.set_ylabel("Wahrscheinlichkeitsdichte")
         
-        # Datenpunkte
-        ax.scatter(x, y, color='black', alpha=0.5, label='Datenpunkte')
-        ax.plot(x_grid, y_pred_mean, color='#2980b9', lw=2, label='Modell (Mean)')
+        ax.set_ylim(0, 0.08)
+        ax.set_xlim(-60, 150)
         
-        # Epistemisch (Blau)
-        if show_epi:
-            lower = y_pred_mean - t_crit * np.sqrt(var_mean)
-            upper = y_pred_mean + t_crit * np.sqrt(var_mean)
-            ax.fill_between(x_grid, lower, upper, color='#2980b9', alpha=0.4, label='Unsicherheit (Mittel)')
-            
-        # Aleatorisch (Grau)
-        if show_ale:
-            lower = y_pred_mean - t_crit * np.sqrt(var_pred)
-            upper = y_pred_mean + t_crit * np.sqrt(var_pred)
-            ax.fill_between(x_grid, lower, upper, color='#7f8c8d', alpha=0.2, label='Unsicherheit (Vorhersage)')
-
-        ax.set_ylim(-10, 35)
-        ax.set_xlabel("Input Variable")
-        ax.set_title(f"Daten N={N}, Noise={sigma}")
-        ax.legend(loc='upper left')
-        ax.grid(True, linestyle=':', alpha=0.5)
+        # Null-Linie
+        ax.axvline(0, color='black', linewidth=1.5, linestyle=':')
+        ax.text(-2, 0.075, 'Pünktlich (0 Min)', rotation=90, verticalalignment='top')
+        
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
         
         return fig
 
