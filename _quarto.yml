@@ -16,6 +16,9 @@ website:
       - chap6.qmd
       - chap7.qmd
 
+execute:
+  enabled: false
+
 format:
   html:
     theme: cosmo
