@@ -14,16 +14,17 @@ Der Prior zwingt uns, unsere Annahmen transparent zu machen. Es gibt zwei Haupta
 
 Kritiker werfen der bayesianischen Statistik oft vor, durch Priors Subjektivität in die Wissenschaft zu bringen. Die moderne statistische Literatur entgegnet, dass exakt das Gegenteil der Fall ist. Der Prior macht inhärente und ohnehin vorhandene subjektive Annahmen mathematisch angreifbar und transparent (Gelman et al., 2013). Er zwingt uns, unsere Vorurteile offen zu legen und zu reflektieren, anstatt sie im Dunkeln zu belassen. In der Praxis können informative Priors die Stabilität von Modellen erheblich verbessern, insbesondere bei kleinen Stichproben oder komplexen Modellen, und so zu robusteren und realistischeren Ergebnissen führen.
 
-### Beispiel Deutsche Bahn: Die erwartete Verspätung
-Du möchtest die durchschnittliche Verspätung des ICE von Berlin nach München schätzen. Bevor du auch nur auf den Fahrplan schaust, hast du bereits leiderprobtes Vorwissen. 
+### Beispiel SmartRail: Die erwartete Verspätungsreduktion
+Du möchtest abschätzen, um wie viele Minuten SmartRail die durchschnittliche Verspätung auf der Pilotstrecke München–Stuttgart reduziert. Bevor die ersten Testdaten eintreffen, formalisierst du dein Vorwissen.
 
-Ein uninformativer Prior würde annehmen, dass jede Verspätung gleich wahrscheinlich ist. Das ist unlogisch, da es extrem unwahrscheinlich ist, dass die Deutsche Bahn mit 0 Minuten verspätung (Oder gar überpünktlich) einfährt. Ein informativer Prior konzentriert die Wahrscheinlichkeitsmasse auf realistische Werte. Du weißt aus Erfahrung, dass Züge seltenst pünktlich sind und die durchschnittliche Verspätung oft im Bereich von wenigen bis zu einigen dutzend Minuten liegt .
+Ein uninformativer Prior würde annehmen, dass jede Reduktion gleich wahrscheinlich ist, von einer massiven Verschlechterung bis hin zu einer unrealistischen Verbesserung um 30 Minuten. Das ist unlogisch. Ein informativer Prior konzentriert die Wahrscheinlichkeitsmasse auf realistische Werte. Basierend auf Simulationen und vergleichbaren Systemen im europäischen Ausland erwartest du eine moderate Verbesserung im Bereich von wenigen Minuten.
+
 ### Deine Aufgabe
-Die folgende Applikation erlaubt es dir, deinen eigenen Frust mathematisch exakt als Prior zu modellieren.
+Die Applikation erlaubt es dir, deine Erwartung an SmartRail mathematisch exakt als Prior zu modellieren.
 
-1. **Beobachten:** Belasse die Startwerte. Der Graph zeigt absolute Ahnungslosigkeit. Eine Verfrühung von 30 Minuten (links im roten Bereich) wird als fast genauso wahrscheinlich erachtet wie eine leichte Verspätung.
-2. **Erfahrung einfließen lassen:** Du bist Realist. Setze den Erwartungswert auf 15 Minuten Verspätung.
-3. **Unsicherheit reduzieren:** Da du oft fährst, bist du dir deiner Sache sicher. Reduziere die Unsicherheit (SD) so weit, bis der Bereich links von der Nulllinie (Überpünktlichkeit) praktisch keine Wahrscheinlichkeitsmasse mehr abbekommt. Du hast soeben einen fundierten, informativen Prior gebaut.
+1. **Beobachten:** Belasse die Startwerte. Der Graph zeigt absolute Ahnungslosigkeit. Eine Verschlechterung durch SmartRail (links im roten Bereich) wird als fast genauso wahrscheinlich erachtet wie eine Verbesserung.
+2. **Erfahrung einfließen lassen:** Du kennst die Simulationsergebnisse. Setze den Erwartungswert auf 5 Minuten Verspätungsreduktion.
+3. **Unsicherheit reduzieren:** Basierend auf den Simulationsdaten bist du dir relativ sicher. Reduziere die Unsicherheit (SD) so weit, bis der Bereich links von der Nulllinie (SmartRail verschlechtert) praktisch keine Wahrscheinlichkeitsmasse mehr abbekommt. Du hast soeben einen fundierten, informativen Prior gebaut.
 
 ```{shinylive-python}
 #| standalone: true
@@ -36,14 +37,14 @@ from scipy.stats import norm
 
 app_ui = ui.page_fluid(
     ui.card(
-        ui.card_header("Prior Gestaltung: Der Bahn-Frust in Zahlen"),
+        ui.card_header("SmartRail: Prior für die Verspätungsreduktion"),
         ui.layout_columns(
             ui.div(
                 ui.h5("Prior Parameter konfigurieren"),
-                ui.input_slider("mean", "Erwartete Verspätung (Minuten)", -30, 120, 0),
-                ui.input_slider("sd", "Unsicherheit (SD)", 1, 100, 80),
+                ui.input_slider("mean", "Erwartete Reduktion (Minuten)", -10, 20, 0),
+                ui.input_slider("sd", "Unsicherheit (SD)", 1, 25, 20),
                 ui.hr(),
-                ui.p("Ein hoher SD-Wert spiegelt vollkommene Ahnungslosigkeit wider. Ein niedriger SD-Wert zeigt deine harte Pendlererfahrung."),
+                ui.p("Ein hoher SD-Wert spiegelt vollkommene Ahnungslosigkeit über SmartRails Effekt wider. Ein niedriger SD-Wert zeigt fundiertes Vorwissen aus Simulationen."),
             ),
             ui.output_plot("prior_plot"),
             col_widths=(4, 8)
@@ -57,29 +58,29 @@ def server(input, output, session):
         mu = input.mean()
         sigma = input.sd()
         
-        x = np.linspace(-60, 150, 500)
+        x = np.linspace(-30, 35, 500)
         y = norm.pdf(x, mu, sigma)
         
         fig, ax = plt.subplots(figsize=(10, 5))
         
-        # Unmöglichen Bereich (zu früh) rot hinterlegen
-        ax.axvspan(-60, 0, color='#e74c3c', alpha=0.1)
-        ax.text(-30, 0.04, 'Überpünktlich\n(Fantasieland)', color='#c0392b', ha='center', va='center', fontweight='bold')
+        # Negativer Bereich (Verschlechterung) rot hinterlegen
+        ax.axvspan(-30, 0, color='#e74c3c', alpha=0.1)
+        ax.text(-15, 0.04, 'SmartRail\nverschlechtert', color='#c0392b', ha='center', va='center', fontweight='bold')
         
         # Prior zeichnen
         ax.plot(x, y, color='#2c3e50', linewidth=2.5)
         ax.fill_between(x, 0, y, color='#34495e', alpha=0.3)
         
         ax.set_title("Deine Prior Verteilung $P(\\theta)$")
-        ax.set_xlabel("Erwartete Verspätung in Minuten")
+        ax.set_xlabel("Verspätungsreduktion durch SmartRail (Minuten)")
         ax.set_ylabel("Wahrscheinlichkeitsdichte")
         
         ax.set_ylim(0, 0.08)
-        ax.set_xlim(-60, 150)
+        ax.set_xlim(-30, 35)
         
         # Null-Linie
         ax.axvline(0, color='black', linewidth=1.5, linestyle=':')
-        ax.text(-2, 0.075, 'Pünktlich (0 Min)', rotation=90, verticalalignment='top')
+        ax.text(-2, 0.075, 'Kein Effekt (0 Min)', rotation=90, verticalalignment='top')
         
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)

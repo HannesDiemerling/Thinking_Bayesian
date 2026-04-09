@@ -14,19 +14,19 @@ Klassische Regressionsmodelle berechnen oft nur einen einzelnen Punktschätzer f
 
 Dabei kombiniert sie zwei völlig unterschiedliche Arten von Unsicherheit: Die epistemische Unsicherheit (Wie sicher bist du dir über den wahren Parameter $\theta$?) und die aleatorische Unsicherheit (Das natürliche Rauschen der realen Welt). Das Resultat ist eine Vorhersage, die echte Unsicherheiten nicht künstlich glattbügelt, sondern ehrlich ausweist (McElreath, 2020).
 
-### Beispiel Deutsche Bahn: Dein Zug morgen früh
-Du hast deine historischen Daten $D$ ausgewertet. Deine Posterior Verteilung $P(\theta|D)$ sagt dir nun, dass die durchschnittliche Verspätung $\theta$ auf deiner Pendlerstrecke bei etwa 10 Minuten liegt. 
+### Beispiel SmartRail: Die Prognose für morgen
+Du hast die Testfahrten $D$ ausgewertet. Deine Posterior Verteilung $P(\theta|D)$ sagt dir nun, dass SmartRails durchschnittliche Verspätungsreduktion $\theta$ bei etwa 6 Minuten liegt.
 
-Aber der Durchschnitt bringt dich morgen früh nicht pünktlich zur Arbeit (Denn vertrauen ist gut, aber kontrolle...). Du willst die Verspätung deines exakten Zuges morgen früh wissen. Dieser eine zukünftige Zug ist dein neuer Datenpunkt $\tilde{y}$.
+Aber der Durchschnitt reicht dem Projektteam nicht. Es will wissen, wie viel SmartRail bei einer konkreten Fahrt morgen auf der Pilotstrecke einsparen wird. Diese eine zukünftige Fahrt ist dein neuer Datenpunkt $\tilde{y}$.
 
-Selbst wenn du den wahren Durchschnitt $\theta$ exakt auf die Sekunde kennen würdest, wird dein Zug morgen davon abweichen. Züge unterliegen einer natürlichen Schwankung durch das Wetter, technische Defekte oder blockierte Türen. Die Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ nimmt deine bestehende Unsicherheit über den Durchschnitt $\theta$ und addiert das unvorhersehbare tägliche Chaos der realen Welt. Das Ergebnis ist eine Kurve, die dir genau sagt, mit welcher Wahrscheinlichkeit du morgen exakt $\tilde{y}$ Minuten zu spät kommst.
+Selbst wenn du die wahre durchschnittliche Reduktion $\theta$ exakt kennen würdest, wird die morgige Fahrt davon abweichen. Einzelfahrten unterliegen einer natürlichen Schwankung durch Wetter, Auslastung oder technische Störungen. Die Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ nimmt deine bestehende Unsicherheit über den Durchschnitt $\theta$ und addiert das unvorhersehbare tägliche Chaos des Bahnbetriebs. Das Ergebnis ist eine Kurve, die dir genau sagt, mit welcher Wahrscheinlichkeit SmartRail morgen exakt $\tilde{y}$ Minuten Verspätung einspart.
 
 ### Deine Aufgabe
-Die Applikation zeigt dir die violette Posterior Verteilung $P(\theta|D)$ für den Durchschnitt $\theta$ und die orange Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ für deinen spezifischen Zug morgen $\tilde{y}$.
+Die Applikation zeigt dir die violette Posterior Verteilung $P(\theta|D)$ für den Durchschnittseffekt $\theta$ und die orange Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ für die konkrete Fahrt morgen $\tilde{y}$.
 
-1. **Beobachten:** Die orange Vorhersagekurve für morgen $\tilde{y}$ ist immer breiter als die violette Kurve für den Durchschnitt $\theta$. Ein Einzelfall schwankt immer massiver als der langfristige Durchschnitt.
-2. **Das Systemrauschen erhöhen:** Erhöhe die natürliche Schwankung der Züge (das aleatorische Rauschen). Die orange Kurve wird extrem breit. Präzise Vorhersagen für Einzelfahrten werden unmöglich, selbst wenn der Durchschnitt $\theta$ perfekt geschätzt ist.
-3. **Parameter Unsicherheit erhöhen:** Mache deine Schätzung für $\theta$ unsicherer. Beide Kurven werden breiter. Dein fehlendes Wissen über das System überträgt sich direkt auf die fehlerhafte Vorhersage deines Zuges morgen.
+1. **Beobachten:** Die orange Vorhersagekurve für morgen $\tilde{y}$ ist immer breiter als die violette Kurve für den Durchschnitt $\theta$. Eine Einzelfahrt schwankt immer massiver als der langfristige Durchschnitt.
+2. **Das Betriebsrauschen erhöhen:** Erhöhe die natürliche Schwankung im Bahnbetrieb (das aleatorische Rauschen). Die orange Kurve wird extrem breit. Präzise Vorhersagen für Einzelfahrten werden unmöglich, selbst wenn der Durchschnittseffekt $\theta$ perfekt geschätzt ist.
+3. **Parameter Unsicherheit erhöhen:** Mache deine Schätzung für $\theta$ unsicherer. Beide Kurven werden breiter. Dein fehlendes Wissen über SmartRails wahren Effekt überträgt sich direkt auf die fehlerhafte Vorhersage der morgigen Fahrt.
 
 ```{shinylive-python}
 #| standalone: true
@@ -39,15 +39,15 @@ from scipy.stats import norm
 
 app_ui = ui.page_fluid(
     ui.card(
-        ui.card_header("Vorhersage: Dein Zug y neu morgen"),
+        ui.card_header("SmartRail: Vorhersage für die nächste Fahrt"),
         ui.layout_columns(
             ui.div(
-                ui.h5("Wissen über den Durchschnitt Theta"),
-                ui.input_slider("post_mean", "Geschätzter Durchschnitt Theta", 0, 30, 10),
+                ui.h5("Wissen über SmartRails Durchschnittseffekt"),
+                ui.input_slider("post_mean", "Geschätzte Reduktion Theta", 0, 20, 6),
                 ui.input_slider("post_sd", "Unsicherheit über Theta", 0.1, 10, 2),
                 ui.hr(),
-                ui.h5("Chaos der realen Welt"),
-                ui.input_slider("noise_sd", "Natürliche Schwankung der Züge", 1, 20, 5),
+                ui.h5("Schwankungen im Bahnbetrieb"),
+                ui.input_slider("noise_sd", "Natürliche Schwankung pro Fahrt", 1, 15, 4),
             ),
             ui.output_plot("pred_plot"),
             col_widths=(4, 8)
@@ -76,8 +76,8 @@ def server(input, output, session):
         
         ax.plot(x_vals, pred_y, color='#e67e22', linewidth=3, label='Vorhersage P(y neu|D)')
         
-        ax.set_title("Vorhersage für den neuen Datenpunkt y neu")
-        ax.set_xlabel("Verspätung in Minuten")
+        ax.set_title("Vorhersage für die nächste SmartRail-Fahrt")
+        ax.set_xlabel("Verspätungsreduktion in Minuten")
         ax.set_ylabel("Wahrscheinlichkeitsdichte")
         ax.set_xlim(-20, 50)
         ax.set_ylim(0, max(np.max(post_y), np.max(pred_y)) * 1.1)

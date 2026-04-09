@@ -23,12 +23,19 @@ Im bayesianischen Sinne lautet die Aussage: Basierend auf meinen bisherigen Erfa
 **Warum ist diese Unterscheidung wichtig?**
 Klassische Metriken wie p-Werte oder Konfidenzintervalle sind oft unintuitiv. Ein 95-%-Konfidenzintervall bedeutet nicht, dass der wahre Wert mit 95 % Wahrscheinlichkeit in diesem Intervall liegt (Wasserstein & Lazar, 2016). Es beschreibt lediglich die langfristige Erfolgsquote des Verfahrens: Würde man das Experiment unendlich oft wiederholen, würden 95 % der so berechneten Intervalle den fixen, wahren Wert einschließen (Neyman, 1937). Die bayesianische Statistik erlaubt hingegen direkte und leicht verständliche Wahrscheinlichkeitsaussagen über unsichere Ereignisse in der realen Welt.
 
-### Deine Aufgabe
-Die folgende Applikation verdeutlicht diesen konzeptionellen Unterschied. Du stehst am Bahnhof und beobachtest einfahrende Züge.
+### Beispiel SmartRail: Pünktlichkeit auf der Pilotstrecke
+Deutsche Bahn testet SmartRail auf der Pilotstrecke München–Stuttgart. Das System steuert Signale und Weichen in Echtzeit und soll die Pünktlichkeit deutlich verbessern. Die wahre Pünktlichkeitsquote unter SmartRail liegt bei 85 %, das ist dir als Analyst jedoch nicht bekannt.
 
-1. **Beobachten:** Klicke auf den Button, um neue Daten zu generieren. Die frequentistische Sicht (links) berechnet stur den aktuellen Durchschnitt der Pünktlichkeit. Bei wenigen Zügen schwankt dieser Wert extrem.
-2. **Verstehen:** Die bayesianische Sicht (rechts) zeigt eine Kurve. Diese Kurve repräsentiert deinen Grad der Überzeugung über die wahre Pünktlichkeitsquote. Sie beginnt breit (hohe Unsicherheit) und wird mit jedem beobachteten Zug schmaler (höhere Gewissheit).
-3. **Auswerten:** Erhöhe die Anzahl der beobachteten Züge mit dem Schieberegler. Bei sehr vielen Beobachtungen liefern beide Ansätze ein ähnliches Ergebnis. Der Weg dorthin und die Interpretation der Unsicherheit unterscheiden sich jedoch fundamental.
+Ein Frequentist beobachtet 10 SmartRail-Fahrten, zählt 7 pünktliche und meldet: „Die Quote liegt bei 70 %." Bei der nächsten Stichprobe sind 9 von 10 pünktlich, und die Quote springt auf 90 %. Die Schätzung schwankt bei kleinen Datenmengen extrem und liefert kein Maß für die verbleibende Unsicherheit.
+
+Ein Bayesianer startet mit einer breiten Vorannahme und aktualisiert seine Überzeugung mit jeder beobachteten Fahrt. Nach 10 Fahrten hat er nicht nur eine Punktschätzung, sondern eine vollständige Verteilung, die seine verbleibende Unsicherheit über SmartRails wahre Pünktlichkeit transparent ausweist.
+
+### Deine Aufgabe
+Die Applikation simuliert die Überwachung von SmartRail auf der Pilotstrecke.
+
+1. **Beobachten:** Klicke auf den Button, um SmartRail-Fahrten zu simulieren. Die frequentistische Sicht (links) berechnet den aktuellen Anteil pünktlicher Züge. Bei wenigen Fahrten schwankt dieser Wert extrem.
+2. **Verstehen:** Die bayesianische Sicht (rechts) zeigt eine Kurve. Diese Kurve repräsentiert deinen Grad der Überzeugung über SmartRails wahre Pünktlichkeitsquote. Sie beginnt breit (hohe Unsicherheit) und wird mit jeder beobachteten Fahrt schmaler (höhere Gewissheit).
+3. **Auswerten:** Erhöhe die Anzahl der beobachteten Fahrten mit dem Schieberegler. Bei sehr vielen Beobachtungen liefern beide Ansätze ein ähnliches Ergebnis. Der Weg dorthin und die Interpretation der Unsicherheit unterscheiden sich jedoch fundamental.
 
 ```{shinylive-python}
 #| standalone: true
@@ -41,14 +48,14 @@ from scipy.stats import beta
 
 app_ui = ui.page_fluid(
     ui.card(
-        ui.card_header("Simulation: Pünktlichkeit am Bahnhof"),
+        ui.card_header("SmartRail: Pünktlichkeit auf der Pilotstrecke"),
         ui.layout_columns(
             ui.div(
                 ui.h5("Steuerung"),
-                ui.input_slider("n_trains", "Anzahl beobachteter Züge", 1, 200, 5, step=1),
-                ui.input_action_button("sim_btn", "Züge beobachten", class_="btn-primary"),
+                ui.input_slider("n_trains", "Anzahl beobachteter SmartRail-Fahrten", 1, 200, 5, step=1),
+                ui.input_action_button("sim_btn", "Fahrten beobachten", class_="btn-primary"),
                 ui.hr(),
-                ui.p("Die wahre, dir unbekannte Pünktlichkeitsquote liegt bei 70 %."),
+                ui.p("Die wahre, dir unbekannte Pünktlichkeitsquote unter SmartRail liegt bei 85 %."),
             ),
             ui.output_plot("prob_plot"),
             col_widths=(3, 9)
@@ -65,7 +72,7 @@ def server(input, output, session):
     def update_data():
         n = input.n_trains()
         np.random.seed(input.sim_btn())
-        trains = np.random.binomial(1, 0.7, n)
+        trains = np.random.binomial(1, 0.85, n)
         data.set(trains)
 
     @render.plot
@@ -82,9 +89,9 @@ def server(input, output, session):
         freq_est = on_time / n if n > 0 else 0
         
         ax1.bar(["Aktuelle Quote"], [freq_est], color="#3498db")
-        ax1.axhline(0.7, color="#e74c3c", linestyle="dotted", label="Wahrer Wert")
+        ax1.axhline(0.85, color="#e74c3c", linestyle="dotted", label="Wahrer Wert")
         ax1.set_ylim(0, 1)
-        ax1.set_title(f"Frequentistisch\n{on_time} von {n} pünktlich ({freq_est:.2f})")
+        ax1.set_title(f"Frequentistisch\n{on_time} von {n} Fahrten pünktlich ({freq_est:.2f})")
         ax1.legend()
         ax1.spines['top'].set_visible(False)
         ax1.spines['right'].set_visible(False)
@@ -96,9 +103,9 @@ def server(input, output, session):
         
         ax2.plot(x, y, color="#2ecc71", linewidth=2)
         ax2.fill_between(x, 0, y, color="#2ecc71", alpha=0.3)
-        ax2.axvline(0.7, color="#e74c3c", linestyle="dotted")
+        ax2.axvline(0.85, color="#e74c3c", linestyle="dotted")
         ax2.set_title(f"Bayesianisch\nGrad der Überzeugung")
-        ax2.set_xlabel("Mögliche Pünktlichkeitsquote")
+        ax2.set_xlabel("Mögliche Pünktlichkeitsquote SmartRail")
         ax2.set_yticks([])
         ax2.spines['top'].set_visible(False)
         ax2.spines['right'].set_visible(False)

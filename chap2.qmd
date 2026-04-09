@@ -17,18 +17,19 @@ Die Variablen:
 * Evidenz $P(D)$: Die totale Wahrscheinlichkeit, diese Daten zu beobachten, völlig unabhängig von der Hypothese.
 * Posterior $P(\theta|D)$: Deine aktualisierte Überzeugung über die Hypothese, nachdem du die Evidenz integriert hast.
 
-### Beispiel Deutsche Bahn: Die Signalstörung
-Du stehst am Gleis und die Anzeigetafel meldet eine Verspätung. Du fragst dich, ob eine Signalstörung vorliegt. 
+### Beispiel SmartRail: Das Diagnosemodul
+SmartRail verfügt über ein Diagnosemodul, das Weichenstörungen auf der Strecke automatisch erkennen soll. Auf der Leitstelle geht ein Alarm ein. Du fragst dich, ob tatsächlich eine Weichenstörung vorliegt.
 
-Dein Vorwissen $P(\theta)$ (Prior) besagt, dass Signalstörungen selten sind. Lediglich an 5 % aller Tage treten sie auf. Die Likelihood $P(D|\theta)$ besagt: Wenn eine Signalstörung vorliegt, hat der Zug mit einer Wahrscheinlichkeit von 90 % eine Verspätung.
+Dein Vorwissen $P(\theta)$ (Prior) besagt, dass Weichenstörungen selten sind. Lediglich an 3 % aller Betriebstage tritt eine tatsächliche Störung auf. Die Likelihood $P(D|\theta)$ besagt: Wenn eine echte Weichenstörung vorliegt, erkennt SmartRail sie mit einer Wahrscheinlichkeit von 95 %.
 
-Züge verspäten sich oft aus anderen Gründen wie Personalmangel oder Wetter. Diese Gesamtwahrscheinlichkeit einer Verspätung über alle Ursachen hinweg bildet die Evidenz $P(D)$. Das Bayes Theorem berechnet den Posterior $P(\theta|D)$: die exakte Wahrscheinlichkeit für eine Signalstörung, nachdem die Verspätung bereits real beobachtet wurde.
+Allerdings produziert das System auch Fehlalarme. An störungsfreien Tagen schlägt SmartRail trotzdem in 8 % der Fälle falschen Alarm. Diese Fehlalarmrate bildet zusammen mit der echten Erkennungsrate die Evidenz $P(D)$. Das Bayes Theorem berechnet den Posterior $P(\theta|D)$: die exakte Wahrscheinlichkeit für eine tatsächliche Weichenstörung, nachdem der Alarm bereits eingegangen ist.
 
 ### Deine Aufgabe
 Spiele mit den Reglern in der interaktiven Applikation.
-1. Beobachten: Stelle den Prior auf 5 % und die Likelihood auf 90 %. Setze die Wahrscheinlichkeit für Verspätungen ohne Signalstörung auf 20 %.
-2. Analysieren: Der Posterior Balken zeigt dir die tatsächliche Wahrscheinlichkeit für eine Signalstörung bei aktueller Verspätung.
-3. Verstehen: Erhöhe die Wahrscheinlichkeit für Verspätungen durch andere Gründe. Beobachte, wie die Wahrscheinlichkeit für eine Signalstörung massiv sinkt, obwohl die Verspätung real ist.
+
+1. **Beobachten:** Stelle den Prior auf 3 % und die Likelihood auf 95 %. Setze die Fehlalarmrate auf 8 %.
+2. **Analysieren:** Der Posterior Balken zeigt dir die tatsächliche Wahrscheinlichkeit für eine Weichenstörung bei einem SmartRail-Alarm.
+3. **Verstehen:** Erhöhe die Fehlalarmrate. Beobachte, wie die Wahrscheinlichkeit für eine echte Störung massiv sinkt, obwohl der Alarm real ist. Ein System mit vielen Fehlalarmen entwertet jeden einzelnen Alarm.
 
 ```{shinylive-python}
 #| standalone: true
@@ -39,15 +40,15 @@ import matplotlib.pyplot as plt
 
 app_ui = ui.page_fluid(
     ui.card(
-        ui.card_header("Simulation: Ursache der Zugverspätung"),
+        ui.card_header("SmartRail: Diagnosemodul Weichenstörung"),
         ui.layout_columns(
             ui.div(
                 ui.h5("Prior"),
-                ui.input_slider("prior", "Signalstörungen generell (%)", 1, 100, 5),
+                ui.input_slider("prior", "Weichenstörungen generell (%)", 1, 100, 3),
                 ui.h5("Likelihood"),
-                ui.input_slider("likelihood", "Verspätung bei Signalstörung (%)", 1, 100, 90),
-                ui.h5("Andere Gründe"),
-                ui.input_slider("false_positive", "Verspätung OHNE Signalstörung (%)", 1, 100, 20),
+                ui.input_slider("likelihood", "Erkennung bei echter Störung (%)", 1, 100, 95),
+                ui.h5("Fehlalarme"),
+                ui.input_slider("false_positive", "Alarm OHNE echte Störung (%)", 1, 100, 8),
             ),
             ui.output_plot("bayes_plot"),
             col_widths=(4, 8)
@@ -74,7 +75,7 @@ def server(input, output, session):
         
         ax.set_ylim(0, 100)
         ax.set_ylabel("Wahrscheinlichkeit in Prozent")
-        ax.set_title("Wahrscheinlichkeit einer Signalstörung bei Verspätung")
+        ax.set_title("Wahrscheinlichkeit einer Weichenstörung bei SmartRail-Alarm")
         
         for bar in bars:
             height = bar.get_height()
