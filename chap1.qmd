@@ -6,9 +6,9 @@ format: html
 ## Zeit: 15 min | Schwierigkeit: Einfach
 
 ### Warum Wahrscheinlichkeit?
-Jeden Tag triffst du Entscheidungen unter Unsicherheit. Kommt dein Zug heute pünktlich an? Lohnt es sich, am Bahnsteig zu warten, oder gehst du lieber zu Fuß? Da wir die Zukunft (leider) nicht mit Gewissheit vorhersehen können, möchten wir statdessen die Unsicherheit in unserer vorhersage messbar machen. Genau hier setzt die Statistik an. Sie hilft uns dabei, aus vergangenen Beobachtungen auf zukünftige Ereignisse zu schließen. 
+Jeden Tag triffst du Entscheidungen unter Unsicherheit. Kommt dein Zug heute pünktlich an? Lohnt es sich, am Bahnsteig zu warten, oder gehst du lieber zu Fuß? Da wir die Zukunft (leider) nicht mit Gewissheit vorhersehen können, möchten wir stattdessen die Unsicherheit in unserer vorhersage greifbar machen. Genau hier setzt die Statistik an. Sie hilft uns dabei, aus vergangenen Beobachtungen auf zukünftige Ereignisse zu schließen. 
 
-Bevor wir jedoch Daten analysieren, müssen wir klären, was das Wort Wahrscheinlichkeit bedeutet. In der Wissenschaft existieren dazu zwei grundlegend verschiedene Ansichten.
+Bevor wir jedoch Daten analysieren, müssen wir klären, worauf genau sich die Wahrscheinlichkeit bezieht. In der Wissenschaft existieren dazu zwei grundlegend verschiedene Ansichten.
 
 ### Zwei Welten der Wahrscheinlichkeit
 
@@ -17,25 +17,31 @@ Hier wird Wahrscheinlichkeit als der Grenzwert relativer Häufigkeiten bei unend
 Wenn die Deutsche Bahn angibt, ein Zug sei zu 80 % pünktlich, bedeutet das im klassischen Sinne Folgendes: Würde exakt dieser Zug unter exakt denselben Bedingungen unendlich oft fahren, wäre er in 80 % der Fälle pünktlich. Über deine heutige, einmalige Fahrt um 14 Uhr lässt sich damit streng genommen keine Wahrscheinlichkeitsaussage treffen.
 
 **Der bayesianische Ansatz**
-Hier ist Wahrscheinlichkeit ein Maß für den Grad der persönlichen Überzeugung, basierend auf dem aktuellen Informationsstand (Jaynes, 2003). 
-Im bayesianischen Sinne lautet die Aussage: Basierend auf meinen bisherigen Erfahrungen mit dieser Strecke und dem aktuellen Wetter bin ich mir zu 80 % sicher, dass mein heutiger Zug pünktlich ankommt. Hier lässt sich also eine direkte Aussage über die Unsicherheit bezüglich eines einmaligen Ereignisses treffen, was im Alltag oft intuitiver und nützlicher ist.
+Hier ist Wahrscheinlichkeit ein Maß für den Grad der persönlichen Überzeugung, basierend auf dem aktuellen Informationsstand. 
+Im bayesianischen Sinne lautet die Aussage: Basierend auf meinen bisherigen Erfahrungen mit dieser Strecke und dem aktuellen Wetter bin ich mir zu 80 % sicher, dass mein heutiger Zug pünktlich ankommt. Hier lässt sich also eine direkte Aussage über die Unsicherheit bezüglich eines einmaligen Ereignisses treffen, was sowohl im Alltag als auch in der Wissenschaft oft intuitiver und nützlicher ist.
 
 **Warum ist diese Unterscheidung wichtig?**
-Klassische Metriken wie p-Werte oder Konfidenzintervalle sind oft unintuitiv. Ein 95-%-Konfidenzintervall bedeutet nicht, dass der wahre Wert mit 95 % Wahrscheinlichkeit in diesem Intervall liegt (Wasserstein & Lazar, 2016). Es beschreibt lediglich die langfristige Erfolgsquote des Verfahrens: Würde man das Experiment unendlich oft wiederholen, würden 95 % der so berechneten Intervalle den fixen, wahren Wert einschließen (Neyman, 1937). Die bayesianische Statistik erlaubt hingegen direkte und leicht verständliche Wahrscheinlichkeitsaussagen über unsichere Ereignisse in der realen Welt.
+Klassische frequentistische Metriken wie p-Werte oder Konfidenzintervalle sind oft unintuitiv. Ein 95-%-Konfidenzintervall bedeutet nicht, dass der wahre Wert mit 95 % Wahrscheinlichkeit in diesem Intervall liegt. Es beschreibt lediglich die langfristige Erfolgsquote des Verfahrens: Würde man das Experiment unendlich oft wiederholen, würden 95 % der so berechneten Intervalle den fixen, wahren Wert einschließen. Die bayesianische Statistik erlaubt hingegen direkte und leicht verständliche Wahrscheinlichkeitsaussagen über unsichere Ereignisse in der realen Welt.
 
 ### Beispiel SmartRail: Pünktlichkeit auf der Pilotstrecke
-Deutsche Bahn testet SmartRail auf der Pilotstrecke München–Stuttgart. Das System steuert Signale und Weichen in Echtzeit und soll die Pünktlichkeit deutlich verbessern. Die wahre Pünktlichkeitsquote unter SmartRail liegt bei 85 %, das ist dir als Analyst jedoch nicht bekannt.
+Die Deutsche Bahn testet SmartRail auf der Pilotstrecke München–Stuttgart. Das System steuert Signale und Weichen in Echtzeit und soll die Pünktlichkeit deutlich verbessern. Die wahre Pünktlichkeitsquote unter SmartRail liegt bei 85 %, als Analyst kennen wir diesen Wert jedoch nicht. Wir sehen nur Stichproben einzelner Fahrten..
 
-Ein Frequentist beobachtet 10 SmartRail-Fahrten, zählt 7 pünktliche und meldet: „Die Quote liegt bei 70 %." Bei der nächsten Stichprobe sind 9 von 10 pünktlich, und die Quote springt auf 90 %. Die Schätzung schwankt bei kleinen Datenmengen extrem und liefert kein Maß für die verbleibende Unsicherheit.
+In einer ersten Stichprobe beobachten wir 10 SmartRail-Fahrten. Davon sind 7 pünktlich. Die beobachtete Quote beträgt also: 7 von 10 Fahrten waren pünktlich — das entspricht 70 %.
+In einer zweiten Stichprobe sind 9 von 10 Fahrten pünktlich. Die beobachtete Quote beträgt nun: 9 von 10 Fahrten waren pünktlich — das entspricht 90 %.
 
-Ein Bayesianer startet mit einer breiten Vorannahme und aktualisiert seine Überzeugung mit jeder beobachteten Fahrt. Nach 10 Fahrten hat er nicht nur eine Punktschätzung, sondern eine vollständige Verteilung, die seine verbleibende Unsicherheit über SmartRails wahre Pünktlichkeit transparent ausweist.
+Das Beispiel zeigt: Bei kleinen Datenmengen kann die beobachtete Quote stark schwanken. Eine reine Punktschätzung beschreibt zwar die jeweilige Stichprobe, sagt aber allein noch wenig darüber aus, wie unsicher wir über die wahre Pünktlichkeitsquote sind.
+Hier unterscheiden sich die beiden Sichtweisen auf Wahrscheinlichkeit:
+
+Frequentistisch betrachtet ist die wahre Pünktlichkeitsquote ein fester, aber unbekannter Wert. Die Unsicherheit liegt in den Stichproben: Würden wir den Test viele Male wiederholen, erhielten wir unterschiedliche beobachtete Quoten. Diese Stichprobenunsicherheit lässt sich zum Beispiel mit einem Konfidenzintervall ausdrücken.
+
+Bayesianisch betrachtet wird unser Wissen über die unbekannte Pünktlichkeitsquote durch eine Wahrscheinlichkeitsverteilung beschrieben. Wir starten mit einer breiten Vorannahme und aktualisieren diese mit jeder beobachteten Fahrt. Nach 10 Fahrten erhalten wir daher nicht nur einen einzelnen Schätzwert, sondern eine Posterior-Verteilung. Diese Verteilung zeigt direkt, welche Werte für die wahre SmartRail-Pünktlichkeit nach den beobachteten Daten plausibel sind — und wie groß die verbleibende Unsicherheit ist.
 
 ### Deine Aufgabe
 Die Applikation simuliert die Überwachung von SmartRail auf der Pilotstrecke.
 
-1. **Beobachten:** Klicke auf den Button, um SmartRail-Fahrten zu simulieren. Die frequentistische Sicht (links) berechnet den aktuellen Anteil pünktlicher Züge. Bei wenigen Fahrten schwankt dieser Wert extrem.
+1. **Beobachten:** Klicke wiederholt auf den Button. Jeder Klick beobachtet neue SmartRail-Fahrten und fügt sie den bisherigen hinzu (mit dem Schieberegler stellst du ein, wie viele Fahrten pro Klick dazukommen). Die frequentistische Sicht (links) zeigt den aktuellen Anteil pünktlicher Fahrten über alle bisher beobachteten Fahrten. Bei wenigen Fahrten schwankt dieser Wert nach jedem Klick deutlich.
 2. **Verstehen:** Die bayesianische Sicht (rechts) zeigt eine Kurve. Diese Kurve repräsentiert deinen Grad der Überzeugung über SmartRails wahre Pünktlichkeitsquote. Sie beginnt breit (hohe Unsicherheit) und wird mit jeder beobachteten Fahrt schmaler (höhere Gewissheit).
-3. **Auswerten:** Erhöhe die Anzahl der beobachteten Fahrten mit dem Schieberegler. Bei sehr vielen Beobachtungen liefern beide Ansätze ein ähnliches Ergebnis. Der Weg dorthin und die Interpretation der Unsicherheit unterscheiden sich jedoch fundamental.
+3. **Auswerten:** Sammle durch wiederholtes Klicken viele Fahrten (oder erhöhe die Fahrten pro Klick). Bei sehr vielen Beobachtungen liefern beide Ansätze ein ähnliches Ergebnis: Der Balken links und der Hochpunkt der Kurve rechts nähern sich beide dem wahren Wert. Der Weg dorthin und die Interpretation der Unsicherheit unterscheiden sich jedoch fundamental. Mit „Zurücksetzen" startest du von vorne.
 
 ```{shinylive-python}
 #| standalone: true
@@ -52,9 +58,11 @@ app_ui = ui.page_fluid(
         ui.layout_columns(
             ui.div(
                 ui.h5("Steuerung"),
-                ui.input_slider("n_trains", "Anzahl beobachteter SmartRail-Fahrten", 1, 200, 5, step=1),
+                ui.input_slider("step", "Fahrten pro Klick", 1, 50, 1, step=1),
                 ui.input_action_button("sim_btn", "Fahrten beobachten", class_="btn-primary"),
+                ui.input_action_button("reset_btn", "Zurücksetzen", class_="btn-outline-secondary"),
                 ui.hr(),
+                ui.p("Jeder Klick beobachtet neue SmartRail-Fahrten und fügt sie den bisherigen hinzu."),
                 ui.p("Die wahre, dir unbekannte Pünktlichkeitsquote unter SmartRail liegt bei 85 %."),
             ),
             ui.output_plot("prob_plot"),
@@ -64,53 +72,61 @@ app_ui = ui.page_fluid(
 )
 
 def server(input, output, session):
-    
-    data = reactive.Value(None)
-    
+
+    data = reactive.Value(np.array([], dtype=int))
+
     @reactive.Effect
-    @reactive.event(input.n_trains, input.sim_btn)
-    def update_data():
-        n = input.n_trains()
-        np.random.seed(input.sim_btn())
-        trains = np.random.binomial(1, 0.85, n)
-        data.set(trains)
+    @reactive.event(input.sim_btn)
+    def add_trains():
+        new = np.random.binomial(1, 0.85, input.step())
+        data.set(np.concatenate([data.get(), new]))
+
+    @reactive.Effect
+    @reactive.event(input.reset_btn)
+    def reset_trains():
+        data.set(np.array([], dtype=int))
 
     @render.plot
     def prob_plot():
         trains = data.get()
-        if trains is None:
-            return
-            
         n = len(trains)
-        on_time = np.sum(trains)
-        
+        on_time = int(np.sum(trains))
+
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
-        
-        freq_est = on_time / n if n > 0 else 0
-        
-        ax1.bar(["Aktuelle Quote"], [freq_est], color="#3498db")
+
+        # Frequentistisch: aktueller Anteil pünktlicher Fahrten
+        if n > 0:
+            freq_est = on_time / n
+            ax1.bar(["Aktuelle Quote"], [freq_est], color="#3498db")
+            ax1.set_title(f"Frequentistisch\n{on_time} von {n} Fahrten pünktlich ({freq_est:.2f})")
+        else:
+            ax1.text(0.5, 0.5, "Noch keine\nFahrten beobachtet",
+                     ha="center", va="center", color="#7f8c8d", transform=ax1.transAxes)
+            ax1.set_title("Frequentistisch\n0 von 0 Fahrten")
         ax1.axhline(0.85, color="#e74c3c", linestyle="dotted", label="Wahrer Wert")
         ax1.set_ylim(0, 1)
-        ax1.set_title(f"Frequentistisch\n{on_time} von {n} Fahrten pünktlich ({freq_est:.2f})")
         ax1.legend()
         ax1.spines['top'].set_visible(False)
         ax1.spines['right'].set_visible(False)
-        
+
+        # Bayesianisch: Posterior bei flachem Prior Beta(1, 1)
         x = np.linspace(0, 1, 200)
         alpha_post = 1 + on_time
         beta_post = 1 + (n - on_time)
         y = beta.pdf(x, alpha_post, beta_post)
-        
+
         ax2.plot(x, y, color="#2ecc71", linewidth=2)
         ax2.fill_between(x, 0, y, color="#2ecc71", alpha=0.3)
         ax2.axvline(0.85, color="#e74c3c", linestyle="dotted")
-        ax2.set_title(f"Bayesianisch\nGrad der Überzeugung")
+        kurve = "Prior (noch keine Daten)" if n == 0 else f"Posterior nach {n} Fahrten"
+        ax2.set_title(f"Bayesianisch\n{kurve}")
         ax2.set_xlabel("Mögliche Pünktlichkeitsquote SmartRail")
+        ax2.set_ylim(bottom=0)
         ax2.set_yticks([])
         ax2.spines['top'].set_visible(False)
         ax2.spines['right'].set_visible(False)
         ax2.spines['left'].set_visible(False)
-        
+
         plt.tight_layout()
         return fig
 

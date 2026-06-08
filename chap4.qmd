@@ -6,9 +6,9 @@ format: html
 ## Zeit: 15 min | Schwierigkeit: Einsteiger
 
 ### Theorie: Die Passgenauigkeit von Daten und Hypothese
-In der Statistik (Aber auch im echten Leben) werten wir reale Beobachtungen aus. Die Likelihood, ausgedrückt als $P(D|\theta)$, bewertet, wie gut gesammelte Daten $D$ zu einer bestimmten theoretischen Annahme $\theta$ passen. Sie beantwortet die Frage: Wie wahrscheinlich ist es, exakt die vorliegenden Daten $D$ zu beobachten, falls die spezifische Hypothese $\theta$ wahr wäre?
+In der Statistik (aber auch im echten Leben) werten wir reale Beobachtungen aus. Die Likelihood, ausgedrückt als $P(D|\theta)$, bewertet, wie gut gesammelte Daten $D$ zu einer bestimmten theoretischen Annahme $\theta$ passen. Sie beantwortet die Frage: Wie wahrscheinlich ist es, exakt die vorliegenden Daten $D$ zu beobachten, falls die spezifische Hypothese $\theta$ wahr wäre?
 
-In der klassischen Statistik ist die Maximum Likelihood Methode das zentrale Werkzeug. Man sucht exakt den Parameter $\theta$, der die beobachteten Daten $D$ am wahrscheinlichsten macht (Fisher, 1922). In der bayesianischen Statistik nutzen wir die Likelihood als entscheidenden Filter. Dieser bestimmt, welche theoretischen Vorannahmen durch die reale Beobachtung bestätigt oder widerlegt werden.
+In der klassischen Statistik ist die Maximum Likelihood Methode das zentrale Werkzeug. Man sucht exakt den Parameter $\theta$, der die beobachteten Daten $D$ am wahrscheinlichsten macht. In der bayesianischen Statistik nutzen wir die Likelihood als entscheidenden Filter. Dieser bestimmt, mit welchen theoretischen Vorannahmen die gesammelten Daten am ehesten vereinbar sind.
 
 ### Beispiel SmartRail: Testfahrten auswerten
 Du führst fünf Testfahrten mit SmartRail auf der Pilotstrecke durch und misst, um wie viele Minuten sich die Verspätung im Vergleich zum alten System reduziert. Die gemessenen Reduktionen in Minuten lauten: 3, 7, 5, 9 und 6.
@@ -17,16 +17,16 @@ Diese fixierten Werte sind deine Daten $D$. Sie verändern sich nicht mehr.
 
 Wir testen nun verschiedene Hypothesen über die tatsächliche durchschnittliche Verspätungsreduktion durch SmartRail. Diese angenommene durchschnittliche Reduktion ist dein Parameter $\theta$.
 
-Nehmen wir an, SmartRail hat überhaupt keinen Effekt ($\theta = 0$). Wie wahrscheinlich ist es, in der Realität Reduktionen von 5 oder 9 Minuten zu beobachten ($D$), wenn das System gar nichts bewirkt? Extrem unwahrscheinlich. Die Likelihood $P(D|\theta)$ für die Hypothese $\theta = 0$ ist praktisch null.
+Nehmen wir an, SmartRail hat überhaupt keinen Effekt ($\theta = 0$). Wie wahrscheinlich ist es dann, in der Realität Reduktionen von 5 oder 9 Minuten zu beobachten ($D$), wenn das System gar nichts bewirkt? Extrem unwahrscheinlich. Die Likelihood $P(D|\theta)$ unter der Hypothese $\theta = 0$ ist praktisch null.
 
-Verschieben wir die Hypothese auf eine durchschnittliche Reduktion von 6 Minuten ($\theta = 6$). Plötzlich passen die realen Datenpunkte $D$ perfekt zu unserer Annahme. Der Likelihood Wert $P(D|\theta)$ schießt in die Höhe.
+Verschieben wir die Hypothese auf eine durchschnittliche Reduktion von 6 Minuten ($\theta = 6$). Plötzlich passen die realen Datenpunkte $D$ wesentlich besser zu unserer Annahme. Der Likelihood Wert $P(D|\theta)$ schießt in die Höhe.
 
 ### Deine Aufgabe
 In der Applikation siehst du die fixierten SmartRail-Messwerte $D$ als rote Markierungen auf der horizontalen Achse.
 
 1. **Beobachten:** Bewege den Schieberegler für deine Hypothese $\theta$ (die blaue Kurve). Die Kurve zeigt, wo die Datenpunkte liegen müssten, wenn deine Hypothese stimmt.
-2. **Analysieren:** Setze die Hypothese $\theta$ auf 1 Minute. Die Wahrscheinlichkeit, die roten Datenpunkte unter dieser blauen Glocke zu finden, ist extrem gering. Der Likelihood Wert im unteren Diagramm fällt ab.
-3. **Maximieren:** Finde den Maximum Likelihood Schätzer manuell. Bewege den Regler so lange, bis die blaue Kurve die roten Punkte perfekt abdeckt und der schwarze Punkt im unteren Diagramm seinen absoluten Höhepunkt erreicht.
+2. **Analysieren:** Setze die Hypothese $\theta$ auf 1 Minute. Die Wahrscheinlichkeit, die roten Datenpunkte unter dieser blauen Glocke zu finden, ist eher gering. Der Likelihood Wert im unteren Diagramm fällt ab.
+3. **Maximieren:** Finde den Maximum Likelihood Schätzer manuell. Bewege den Regler so lange, bis die blaue Kurve die roten Punkte perfekt abdeckt und der Balken im unteren Diagramm seine maximale Höhe erreicht.
 
 ```{shinylive-python}
 #| standalone: true
@@ -41,7 +41,7 @@ data_points = np.array([3, 7, 5, 9, 6])
 
 app_ui = ui.page_fluid(
     ui.card(
-        ui.card_header("SmartRail: Finde die wahre Verspätungsreduktion"),
+        ui.card_header("SmartRail: Wie gut passt deine Hypothese zu den Messwerten?"),
         ui.layout_columns(
             ui.div(
                 ui.h5("Hypothese Theta testen"),
@@ -85,22 +85,19 @@ def server(input, output, session):
         ax1.spines['right'].set_visible(False)
         
         possible_mus = np.linspace(0, 15, 100)
-        likelihoods = [np.prod(norm.pdf(data_points, m, sigma_fixed)) for m in possible_mus]
-        
-        likelihoods = np.array(likelihoods) / np.max(likelihoods)
-        
+        max_likelihood = np.max([np.prod(norm.pdf(data_points, m, sigma_fixed)) for m in possible_mus])
+
         current_likelihood = np.prod(norm.pdf(data_points, mu_hypo, sigma_fixed))
-        current_likelihood_norm = current_likelihood / np.max([np.prod(norm.pdf(data_points, m, sigma_fixed)) for m in possible_mus])
-        
-        ax2.plot(possible_mus, likelihoods, color='#2c3e50', linewidth=2)
-        ax2.scatter([mu_hypo], [current_likelihood_norm], color='black', s=100, zorder=5)
-        
-        ax2.set_title("Gesamte Likelihood P(D|Theta)")
-        ax2.set_xlabel("Mögliche Werte für Theta (Reduktion in Min)")
+        current_likelihood_norm = current_likelihood / max_likelihood
+
+        ax2.bar([0], [current_likelihood_norm], width=0.5, color='#2c3e50')
+        ax2.text(0, current_likelihood_norm + 0.04, f"{current_likelihood_norm:.2f}", ha='center', va='bottom', fontweight='bold')
+
+        ax2.set_title(f"Gesamte Likelihood P(D|Theta) für deine Hypothese Theta = {mu_hypo}")
         ax2.set_ylabel("Likelihood Wert")
-        ax2.set_xlim(0, 15)
-        ax2.set_ylim(-0.1, 1.1)
-        ax2.axvline(6, color='grey', linestyle='dotted', alpha=0.5)
+        ax2.set_xlim(-1, 1)
+        ax2.set_ylim(0, 1.15)
+        ax2.set_xticks([])
         ax2.spines['top'].set_visible(False)
         ax2.spines['right'].set_visible(False)
         

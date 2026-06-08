@@ -6,27 +6,27 @@ format: html
 ## Zeit: 15 min | Schwierigkeit: Einfach
 
 ### Theorie: Die Zukunft berechnen
-Wer sich seiner Vergangenheit nicht erinnert, ist dazu verdammt, sie zu wiederholen. Wer sich seiner Gegenwart nicht bewusst ist, ist dazu verdammt, sie zu verpassen. Wer sich seiner Zukunft nicht bewusst ist, ist dazu verdammt, sie zu fürchten.
+Bisher haben wir nach innen geschaut. Wir haben aus den Daten gelernt, was der wahre Effekt von SmartRail vermutlich ist, und dieses Wissen in der Posterior Verteilung gebündelt. Doch ein Modell beweist seinen Wert erst, wenn es nach vorne schaut. Niemanden interessiert allein der geschätzte Durchschnittswert. Das Projektteam will wissen, was bei der nächsten konkreten Fahrt tatsächlich passiert. Genau diesen Schritt von der Analyse des Bekannten zur Vorhersage des Unbekannten gehen wir in diesem Kapitel.
 
-Unser Ziel ist die Vorhersage der Zukunft, hierzu bedienen wir uns unseres Priors (Die Vergangenheit) und unserer erhobenen Daten (Die Gegenwart), um unsere Posteriori (Zukunft) vorherzusagen. Die Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ ist das bayesianische Werkzeug, um neue, noch ungesehene Datenpunkte $\tilde{y}$ vorherzusagen, basierend auf den bereits gesammelten Daten $D$.
+Unser Ziel ist die Vorhersage der Zukunft. Wir bedienen wir uns unseres Priors (Die Vergangenheit) und unserer erhobenen Daten (Die Gegenwart), um unsere Posteriori (Zukunft) vorherzusagen. Die Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ ist das bayesianische Werkzeug, um neue, noch ungesehene Datenpunkte $\tilde{y}$ vorherzusagen, basierend auf den bereits gesammelten Daten $D$.
 
-Klassische Regressionsmodelle berechnen oft nur einen einzelnen Punktschätzer für einen Parameter und addieren einen festen Fehlerterm. Das ignoriert fundamentale Unsicherheiten. Die bayesianische Methode ist mathematisch strikter. Sie nutzt deine gesamte Posterior Verteilung $P(\theta|D)$ und simuliert daraus die Zukunft. 
+Klassische Regressionsmodelle schätzen oft nur einen einzelnen , festen Vorhersagewert. Das ignoriert fundamentale Unsicherheiten. Die bayesianische Methode ist mathematisch strikter. Sie nutzt deine gesamte Posterior Verteilung $P(\theta|D)$ und simuliert daraus die Zukunft. 
 
-Dabei kombiniert sie zwei völlig unterschiedliche Arten von Unsicherheit: Die epistemische Unsicherheit (Wie sicher bist du dir über den wahren Parameter $\theta$?) und die aleatorische Unsicherheit (Das natürliche Rauschen der realen Welt). Das Resultat ist eine Vorhersage, die echte Unsicherheiten nicht künstlich glattbügelt, sondern ehrlich ausweist (McElreath, 2020).
+Dabei kombiniert sie zwei völlig unterschiedliche Arten von Unsicherheit: Die epistemische Unsicherheit (Wie sicher bist du dir über den wahren Parameter $\theta$?) und die aleatorische Unsicherheit (Das natürliche Rauschen der realen Welt). Das Resultat ist eine Vorhersage, die echte Unsicherheiten nicht künstlich glattbügelt, sondern ehrlich ausweist.
 
 ### Beispiel SmartRail: Die Prognose für morgen
 Du hast die Testfahrten $D$ ausgewertet. Deine Posterior Verteilung $P(\theta|D)$ sagt dir nun, dass SmartRails durchschnittliche Verspätungsreduktion $\theta$ bei etwa 6 Minuten liegt.
 
-Aber der Durchschnitt reicht dem Projektteam nicht. Es will wissen, wie viel SmartRail bei einer konkreten Fahrt morgen auf der Pilotstrecke einsparen wird. Diese eine zukünftige Fahrt ist dein neuer Datenpunkt $\tilde{y}$.
+Aber der Durchschnitt reicht dem Projektteam nicht. Es will wissen, wie verlässlich diese Reduktion von 6 Minuten bei einer konkreten Fahrt morgen auf der Pilotstrecke eintreten wird. Diese eine zukünftige Fahrt ist dein neuer Datenpunkt $\tilde{y}$.
 
-Selbst wenn du die wahre durchschnittliche Reduktion $\theta$ exakt kennen würdest, wird die morgige Fahrt davon abweichen. Einzelfahrten unterliegen einer natürlichen Schwankung durch Wetter, Auslastung oder technische Störungen. Die Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ nimmt deine bestehende Unsicherheit über den Durchschnitt $\theta$ und addiert das unvorhersehbare tägliche Chaos des Bahnbetriebs. Das Ergebnis ist eine Kurve, die dir genau sagt, mit welcher Wahrscheinlichkeit SmartRail morgen exakt $\tilde{y}$ Minuten Verspätung einspart.
+Selbst wenn du die wahre durchschnittliche Reduktion $\theta$ exakt kennen würdest, kann die morgige Fahrt davon abweichen. Einzelfahrten unterliegen einer natürlichen Schwankung durch Wetter, Auslastung oder technische Störungen. Die Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ nimmt deine bestehende Unsicherheit über den Durchschnitt $\theta$ und addiert das unvorhersehbare tägliche Chaos des Bahnbetriebs. Das Ergebnis ist eine Kurve, die dir genau sagt, mit welcher Wahrscheinlichkeit SmartRail morgen exakt $\tilde{y}$ Minuten Verspätung einspart.
 
 ### Deine Aufgabe
 Die Applikation zeigt dir die violette Posterior Verteilung $P(\theta|D)$ für den Durchschnittseffekt $\theta$ und die orange Posterior Prädiktive Verteilung $P(\tilde{y}|D)$ für die konkrete Fahrt morgen $\tilde{y}$.
 
-1. **Beobachten:** Die orange Vorhersagekurve für morgen $\tilde{y}$ ist immer breiter als die violette Kurve für den Durchschnitt $\theta$. Eine Einzelfahrt schwankt immer massiver als der langfristige Durchschnitt.
+1. **Beobachten:** Die orange Vorhersagekurve für morgen $\tilde{y}$ ist immer breiter als die violette Kurve für den Durchschnitt $\theta$. Einzelfahrten schwanken immer stärker als der langfristige Durchschnitt.
 2. **Das Betriebsrauschen erhöhen:** Erhöhe die natürliche Schwankung im Bahnbetrieb (das aleatorische Rauschen). Die orange Kurve wird extrem breit. Präzise Vorhersagen für Einzelfahrten werden unmöglich, selbst wenn der Durchschnittseffekt $\theta$ perfekt geschätzt ist.
-3. **Parameter Unsicherheit erhöhen:** Mache deine Schätzung für $\theta$ unsicherer. Beide Kurven werden breiter. Dein fehlendes Wissen über SmartRails wahren Effekt überträgt sich direkt auf die fehlerhafte Vorhersage der morgigen Fahrt.
+3. **Parameter Unsicherheit erhöhen:** Mache deine Schätzung für $\theta$ unsicherer. Beide Kurven werden breiter. Dein fehlendes Wissen über SmartRails wahren Effekt überträgt sich direkt auf die Verlässlichkeit der Vorhersage der morgigen Fahrt.
 
 ```{shinylive-python}
 #| standalone: true

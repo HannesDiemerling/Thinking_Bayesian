@@ -8,9 +8,9 @@ format: html
 ### Theorie: Wenn die Mathematik aufgibt
 Das Bayes Theorem berechnet die Posterior Verteilung $P(\theta|D)$. Die Formel erfordert im Nenner die totale Wahrscheinlichkeit der Daten $D$. Um diesen Wert zu ermitteln, verlangt die Mathematik ein Integral über alle erdenklichen Werte des Parameters $\theta$. 
 
-Bei extrem simplen Modellen ist dieses Integral analytisch lösbar. Die Formel liefert ein exaktes Ergebnis. In der realen Welt bauen wir jedoch komplexe Modelle mit zahlreichen Parametern. Hier versagt die reine Mathematik. Das Integral ist schlicht unlösbar.
+Bei simplen Modellen ist dieses Integral analytisch lösbar. Die Formel liefert ein exaktes Ergebnis. In der realen Welt bauen wir jedoch oft komplexe Modelle mit zahlreichen Parametern. Hier versagt die reine Mathematik. Das Integral ist schlicht unlösbar.
 
-Die Lösung für dieses Problem lautet Markov Chain Monte Carlo (kurz MCMC). MCMC ist ein numerischer Algorithmus. Er berechnet die Posterior Verteilung nicht analytisch exakt, sondern approximiert sie durch intelligente Simulation (Metropolis et al., 1953). 
+Die Lösung für dieses Problem lautet Markov Chain Monte Carlo (kurz MCMC). MCMC ist ein numerischer Algorithmus. Er berechnet die Posterior Verteilung nicht analytisch exakt, sondern approximiert sie durch intelligente Simulation. 
 
 Der Algorithmus wandert schrittweise durch den Parameterraum. Er verbringt automatisch viel Zeit an Orten mit hoher Wahrscheinlichkeit und wenig Zeit an Orten mit niedriger Wahrscheinlichkeit. Sammelt man all diese besuchten Orte am Ende auf, erhält man ein perfektes Abbild der gesuchten Posterior Verteilung $P(\theta|D)$.
 
@@ -28,7 +28,7 @@ Die Applikation simuliert diesen blinden SmartRail-Analysten. Die rote Zielkurve
 
 1. **Beobachten:** Klicke bei wenigen Schritten auf den Button. Der Analyst irrt kurz umher. Das untere Diagramm (seine gesammelten Fußspuren) sieht der roten Kurve noch nicht ähnlich.
 2. **Iterieren:** Erhöhe die Anzahl der Schritte massiv. Lass den Analysten den Parameterraum ausgiebig erkunden.
-3. **Ergebnis analysieren:** Das graue Histogramm der besuchten Orte nähert sich perfekt der roten Zielkurve an. Du hast das unlösbare mathematische Integral durch reine Rechenpower und Simulation geknackt.
+3. **Ergebnis analysieren:** Das graue Histogramm der besuchten Orte nähert sich sehr gut der roten Zielkurve an. Du hast das unlösbare mathematische Integral durch reine Rechenpower und Simulation geknackt.
 
 ```{shinylive-python}
 #| standalone: true

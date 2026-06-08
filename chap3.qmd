@@ -6,13 +6,19 @@ format: html
 ## Zeit: 15 min | Schwierigkeit: Einfach
 
 ### Theorie: Die Quantifizierung von Vorwissen
-Ob Student, Wissenschaftler, Dozent oder AGI, wir alle haben ein vorstellung, wie die Welt (Ob real oder virtuel) funktioniert. Dieses Vorwissen (In manchen kontexten auch Vorurteile) gießen wir in der bayesianischen Statistik in eine mathematische Form. Wir nennen dieses Formalisierte Vorwissen den Prior, ausgedrückt als $P(\theta)$.
+Ob Studentin, Wissenschaftler, Dozentin oder KI-System: Wir alle arbeiten mit Annahmen darüber, wie die Welt funktioniert. Dieses Vorwissen kann auf Erfahrung, Theorie, Intuition oder früheren Daten beruhen. Manchmal ist es gut begründet, manchmal eher vage, und in manchen Kontexten kann es auch die Form von Vorurteilen annehmen.
+In der bayesianischen Statistik wird dieses Vorwissen nicht ignoriert, sondern explizit gemacht und in eine mathematische Form gebracht. Diese formalisierte Vorannahme nennen wir den Prior.
+Der Prior beschreibt, welche Werte eines unbekannten Parameters wir vor Beobachtung der neuen Daten für plausibel halten. Mathematisch wird er meist geschrieben als:
+ $P(\theta)$.
+Dabei steht θ für den unbekannten Parameter — in unserem SmartRail-Beispiel also für die wahre Pünktlichkeitsquote.
+
 
 Der Prior zwingt uns, unsere Annahmen transparent zu machen. Es gibt zwei Hauptarten von Priors:
-* **Uninformative Priors:** Sie gehen davon aus, dass alle möglichen Werte eines Parameters gleich wahrscheinlich sind, und repräsentieren keinerlei Vorwissen. Ein klassisches Beispiel ist der flache Prior. Hier ist es wichtig zu verstehen, dass „uninformativ“ nicht gleichbedeutend mit „neutral“ ist. Ein uninformativer Prior kann in bestimmten Kontexten tatsächlich starke Annahmen implizieren.
-* **Informative Priors:** Sie nutzen bestehendes Wissen aus früheren Studien oder logischen Überlegungen, um extreme und unrealistische Werte auszuschließen. Ein typisches Beispiel ist der Weakly Informative Prior, der den Parameterbereich grob eingrenzt (z. B. auf biologisch plausible Werte), ohne das Ergebnis durch zu starke Vorannahmen zu dominieren. Er wirkt wie eine Regularisierung, die verhindert, dass das Modell durch kleine Stichproben oder Ausreißer in absurde Richtungen abdriftet (Gelman et al., 2013).
 
-Kritiker werfen der bayesianischen Statistik oft vor, durch Priors Subjektivität in die Wissenschaft zu bringen. Die moderne statistische Literatur entgegnet, dass exakt das Gegenteil der Fall ist. Der Prior macht inhärente und ohnehin vorhandene subjektive Annahmen mathematisch angreifbar und transparent (Gelman et al., 2013). Er zwingt uns, unsere Vorurteile offen zu legen und zu reflektieren, anstatt sie im Dunkeln zu belassen. In der Praxis können informative Priors die Stabilität von Modellen erheblich verbessern, insbesondere bei kleinen Stichproben oder komplexen Modellen, und so zu robusteren und realistischeren Ergebnissen führen.
+* **Uninformative Priors:** Sie gehen davon aus, dass alle möglichen Werte eines Parameters gleich wahrscheinlich sind, und repräsentieren keinerlei Vorwissen (sog. flacher Prior). Hier ist es wichtig zu verstehen, dass „uninformativ“ nicht gleichbedeutend mit „neutral“ ist. Ein uninformativer Prior kann in bestimmten Kontexten tatsächlich starke Annahmen implizieren.
+* **Informative Priors:** Sie nutzen bestehendes Wissen aus früheren Studien oder logischen Überlegungen, um unrealistische Werte auszuschließen bzw. mit einer geringeren Wahrscheinlichkeit zu versehen. Ein typisches Beispiel ist der weakly Informative Prior, der den plausiblen Parameterbereich grob eingrenzt, ohne das Ergebnis durch zu starke Vorannahmen zu dominieren. 
+
+Kritiker werfen der bayesianischen Statistik oft vor, durch Priors Subjektivität in die Wissenschaft zu bringen. Die moderne statistische Literatur entgegnet, dass exakt das Gegenteil der Fall ist. Der Prior macht inhärente und ohnehin vorhandene subjektive Annahmen mathematisch angreifbar und transparent. Er zwingt uns, unsere Vorurteile offen zu legen und zu reflektieren, anstatt sie im Dunkeln zu belassen. In der Praxis können informative Priors die Stabilität von Modellen erheblich verbessern, insbesondere bei kleinen Stichproben oder komplexen Modellen, und so zu robusteren und realistischeren Ergebnissen führen.
 
 ### Beispiel SmartRail: Die erwartete Verspätungsreduktion
 Du möchtest abschätzen, um wie viele Minuten SmartRail die durchschnittliche Verspätung auf der Pilotstrecke München–Stuttgart reduziert. Bevor die ersten Testdaten eintreffen, formalisierst du dein Vorwissen.
@@ -22,7 +28,7 @@ Ein uninformativer Prior würde annehmen, dass jede Reduktion gleich wahrscheinl
 ### Deine Aufgabe
 Die Applikation erlaubt es dir, deine Erwartung an SmartRail mathematisch exakt als Prior zu modellieren.
 
-1. **Beobachten:** Belasse die Startwerte. Der Graph zeigt absolute Ahnungslosigkeit. Eine Verschlechterung durch SmartRail (links im roten Bereich) wird als fast genauso wahrscheinlich erachtet wie eine Verbesserung.
+1. **Beobachten:** Belasse die Startwerte. Der Graph zeigt noch relative Ahnungslosigkeit. Eine Verschlechterung durch SmartRail (links im roten Bereich) wird als genauso wahrscheinlich erachtet wie eine Verbesserung.
 2. **Erfahrung einfließen lassen:** Du kennst die Simulationsergebnisse. Setze den Erwartungswert auf 5 Minuten Verspätungsreduktion.
 3. **Unsicherheit reduzieren:** Basierend auf den Simulationsdaten bist du dir relativ sicher. Reduziere die Unsicherheit (SD) so weit, bis der Bereich links von der Nulllinie (SmartRail verschlechtert) praktisch keine Wahrscheinlichkeitsmasse mehr abbekommt. Du hast soeben einen fundierten, informativen Prior gebaut.
 
@@ -44,7 +50,7 @@ app_ui = ui.page_fluid(
                 ui.input_slider("mean", "Erwartete Reduktion (Minuten)", -10, 20, 0),
                 ui.input_slider("sd", "Unsicherheit (SD)", 1, 25, 20),
                 ui.hr(),
-                ui.p("Ein hoher SD-Wert spiegelt vollkommene Ahnungslosigkeit über SmartRails Effekt wider. Ein niedriger SD-Wert zeigt fundiertes Vorwissen aus Simulationen."),
+                ui.p("Ein hoher SD-Wert spiegelt eine größere Ahnungslosigkeit über SmartRails Effekt wider. Ein niedriger SD-Wert zeigt fundiertes Vorwissen aus Simulationen."),
             ),
             ui.output_plot("prior_plot"),
             col_widths=(4, 8)
@@ -66,6 +72,10 @@ def server(input, output, session):
         # Negativer Bereich (Verschlechterung) rot hinterlegen
         ax.axvspan(-30, 0, color='#e74c3c', alpha=0.1)
         ax.text(-15, 0.04, 'SmartRail\nverschlechtert', color='#c0392b', ha='center', va='center', fontweight='bold')
+
+        # Positiver Bereich (Verbesserung) grün hinterlegen
+        ax.axvspan(0, 35, color='#2ecc71', alpha=0.1)
+        ax.text(17.5, 0.04, 'SmartRail\nverbessert', color='#27ae60', ha='center', va='center', fontweight='bold')
         
         # Prior zeichnen
         ax.plot(x, y, color='#2c3e50', linewidth=2.5)

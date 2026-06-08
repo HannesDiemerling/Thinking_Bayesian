@@ -6,26 +6,29 @@ format: html
 ## Zeit: 15 min | Schwierigkeit: Einsteiger
 
 ### Theorie: Die Synthese von Vorwissen und Fakten
-In der bayesianischen Statistik ist die Berechnung des Posteriors $P(\theta|D)$ das Ziel jeder Berechnung. Der Posterior repräsentiert deine aktualisierte Überzeugung, dein basierend auf den neuen Daten aktualisierten Vorurteile. Er ist das logische Resultat, wenn du dein theoretisches Vorwissen (den Prior $P(\theta)$) mit den empirischen Fakten (der Likelihood $P(D|\theta)$) kombinierst.
+In der bayesianischen Statistik ist die Berechnung des Posteriors $P(\theta|D)$ das entscheidende Ziel. Der Posterior repräsentiert deine aktualisierte Überzeugung, basierend auf den neuen Daten aktualisierten Vorurteile. Er ist das logische Resultat, wenn du dein theoretisches Vorwissen (den Prior $P(\theta)$) mit den empirischen Fakten (der Likelihood $P(D|\theta)$) kombinierst.
 
-Das Bayes Theorem fungiert hierbei als mathematischer Filter. Der Posterior $P(\theta|D)$ liefert dir keine isolierte Zahl als Punktschätzung oder einen schwellwert, sondern eine vollständige Wahrscheinlichkeitsverteilung für deinen Parameter $\theta$ unter strikter Berücksichtigung der gesammelten Daten $D$.
+Das Bayes-Theorem fungiert hierbei als mathematischer Aktualisierungsmechanismus. Es zeigt, wie vorhandenes Vorwissen mit neuen Daten kombiniert wird, um zu einer rational aktualisierten Einschätzung zu gelangen.
+Je nach Fragestellung kann dieses Ergebnis unterschiedliche Formen annehmen: Bei der Parameterschätzung erhalten wir eine Posterior-Verteilung über einen unbekannten Parameter, etwa die wahre Pünktlichkeitsquote von SmartRail. Bei einem Hypothesen- oder Modellvergleich erhalten wir dagegen aktualisierte Wahrscheinlichkeiten für konkurrierende Theorien, Modelle oder Annahmen.
 
-Ein massiver Vorteil dieser vollständigen Verteilung ist die direkte Berechnung von Glaubwürdigkeitsintervallen (Credible Intervals). Klassische Konfidenzintervalle sind konzeptionell sperrig und werden in der Praxis fast immer falsch interpretiert. Das bayesianische Glaubwürdigkeitsintervall liefert stattdessen exakt die Aussage, die Menschen (Und maschinen in gewisser weise auch) intuitiv suchen: "Mit 95 % Wahrscheinlichkeit liegt der wahre Wert $\theta$ in genau diesem Bereich" (McElreath, 2020).
+Bayesianische Inferenz liefert damit nicht einfach eine isolierte Punktschätzung oder eine starre Ja-Nein-Entscheidung. Sie macht explizit, wie plausibel verschiedene Parameterwerte, Hypothesen oder Modelle nach Berücksichtigung der beobachteten Daten sind.
+
+Ein massiver Vorteil von Posterior-Verteilungen ist die direkte Berechnung von Glaubwürdigkeitsintervallen (Credible Intervals). Klassische Konfidenzintervalle sind konzeptionell schwer zu verstehen und werden in der Praxis häufig falsch interpretiert. Das bayesianische Glaubwürdigkeitsintervall liefert dagegen exakt die Aussage, die Menschen intuitiv suchen: "Mit 95 % Wahrscheinlichkeit liegt der wahre Wert $\theta$ in genau diesem Bereich".
 
 ### Beispiel SmartRail: Die aktualisierte Überzeugung
-Du möchtest die wahre durchschnittliche Verspätungsreduktion $\theta$ durch SmartRail auf der Pilotstrecke präzise bestimmen.
+Du möchtest die wahre durchschnittliche Verspätungsreduktion $\theta$ durch SmartRail auf der Pilotstrecke bestimmen.
 
 Dein Prior $P(\theta)$ basiert auf Simulationen und Herstellerangaben. Du gehst von 8 Minuten durchschnittlicher Reduktion aus (wir sind hier ja Optimisten).
 Die Daten $D$ sind die echten Messungen aus den Testfahrten. Du hast fünf Fahrten ausgewertet. SmartRail hat im Schnitt nur 6 Minuten Verspätung eingespart. Die Likelihood $P(D|\theta)$ quantifiziert, wie diese harten Beobachtungen zu verschiedenen Werten für $\theta$ passen.
 
-Der Posterior $P(\theta|D)$ ist nun deine neue, datenbasierte Realität. Er liegt als Kompromiss irgendwo zwischen deinem Prior (8 Minuten) und den gesammelten Daten (6 Minuten). Wie stark sich der Posterior den Daten anpasst, hängt ausschließlich davon ab, wie sicher dein Prior formuliert war und wie erdrückend die Menge der neuen Daten ist.
+Der Posterior $P(\theta|D)$ ist nun deine neue, datenbasierte Realität. Er liegt als Kompromiss irgendwo zwischen deinem Prior (8 Minuten) und den gesammelten Daten (6 Minuten). Wie stark sich der Posterior den Daten anpasst, hängt davon ab, wie sicher dein Prior formuliert war und wie umfangreich die Menge der neuen Daten ist.
 
 ### Deine Aufgabe
 Die interaktive Abbildung zeigt dir drei Kurven. Den Prior $P(\theta)$ in Grau, die aus den Testdaten abgeleitete Likelihood $P(D|\theta)$ in Rot und den resultierenden Posterior $P(\theta|D)$ in Violett. Der schattierte Bereich unter der violetten Kurve markiert das 95 % Glaubwürdigkeitsintervall.
 
-1. **Beobachten:** Bei einem unsicheren Prior (großer SD Wert) dominieren die roten Testdaten $D$. Der violette Posterior $P(\theta|D)$ verschmilzt fast exakt mit der roten Kurve.
-2. **Vorwissen erzwingen:** Mache deinen Prior extrem sicher. Reduziere die Unsicherheit (SD) auf einen minimalen Wert. Beobachte, wie der graue Prior den violetten Posterior förmlich an sich reißt, völlig unbeeindruckt von den roten Testdaten.
-3. **Interpretation:** Lies das Glaubwürdigkeitsintervall auf der horizontalen Achse ab. Du kannst nun mathematisch unangreifbar behaupten, in welchem exakten Bereich sich SmartRails wahre durchschnittliche Verspätungsreduktion $\theta$ höchstwahrscheinlich bewegt.
+1. **Beobachten:** Bei einem unsicheren Prior (großer SD Wert) dominieren die roten Testdaten $D$. Der violette Posterior $P(\theta|D)$ verschmilzt fast mit der roten Kurve.
+2. **Vorwissen einbauen:** Mache deinen Prior extrem sicher. Reduziere die Unsicherheit (SD) auf einen minimalen Wert. Beobachte, wie der graue Prior den violetten Posterior förmlich an sich reißt, wenig beeindruckt von den roten Testdaten.
+3. **Interpretation:** Lies das Glaubwürdigkeitsintervall auf der horizontalen Achse ab. Du kannst nun empirisch fundiert behaupten, in welchem exakten Bereich sich SmartRails wahre durchschnittliche Verspätungsreduktion $\theta$ höchstwahrscheinlich bewegt.
 
 ```{shinylive-python}
 #| standalone: true

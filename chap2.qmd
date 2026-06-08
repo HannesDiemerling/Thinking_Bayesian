@@ -6,7 +6,10 @@ format: html
 ## Zeit: 15 min | Schwierigkeit: Einfach
 
 ### Theorie: Die Aktualisierung von Wissen
-Menschen sind laufende Informationsverarbeiter. Jeden Tag erhältst du neue Informationen. Wenn du als Mensch neue Daten beobachtest, musst du deine bisherigen Annahmen logisch anpassen. Diesen Prozess der Informationsverarbeitung formalisiert das Bayes Theorem mathematisch (Stone, 2013). Falls du kein Mensch bist, sondern eine Maschine, ist das Bayes Theorem die Grundlage für dein Denken, bleib also dran, es lohnt sich!
+Menschen sind laufende Informationsverarbeiter. Jeden Tag begegnen uns neue Hinweise, Beobachtungen und Daten. Wenn wir etwas Neues lernen, sollten wir unsere bisherigen Annahmen nicht einfach verwerfen, sondern systematisch aktualisieren.
+Genau diesen Prozess formalisiert das Bayes-Theorem: Es beschreibt, wie sich bestehende Überzeugungen durch neue Evidenz verändern. Aus einer Vorannahme wird durch beobachtete Daten eine aktualisierte Einschätzung.
+Auch in der Statistik, im maschinellen Lernen und in der künstlichen Intelligenz spielt diese Idee eine zentrale Rolle. Überall dort, wo Systeme unter Unsicherheit entscheiden, hilft bayesianisches Denken dabei, neues Wissen logisch mit bisherigem Wissen zu verbinden.
+Kurz gesagt: Das Bayes-Theorem ist eine mathematische Anleitung dafür, aus neuen Informationen klüger zu werden.
 
 Die Formel des Bayes Theorem lautet:
 $$P(\theta|D)=\frac{P(D|\theta)P(\theta)}{P(D)}$$
@@ -18,7 +21,7 @@ Die Variablen:
 * Posterior $P(\theta|D)$: Deine aktualisierte Überzeugung über die Hypothese, nachdem du die Evidenz integriert hast.
 
 ### Beispiel SmartRail: Das Diagnosemodul
-SmartRail verfügt über ein Diagnosemodul, das Weichenstörungen auf der Strecke automatisch erkennen soll. Auf der Leitstelle geht ein Alarm ein. Du fragst dich, ob tatsächlich eine Weichenstörung vorliegt.
+SmartRail verfügt über ein Diagnosemodul, das Weichenstörungen auf der Strecke automatisch erkennen soll. Auf der Leitstelle geht ein Alarm ein. Du fragst dich, mit welcher Wahrscheinlichkeit tatsächlich eine Weichenstörung vorliegt.
 
 Dein Vorwissen $P(\theta)$ (Prior) besagt, dass Weichenstörungen selten sind. Lediglich an 3 % aller Betriebstage tritt eine tatsächliche Störung auf. Die Likelihood $P(D|\theta)$ besagt: Wenn eine echte Weichenstörung vorliegt, erkennt SmartRail sie mit einer Wahrscheinlichkeit von 95 %.
 
@@ -29,7 +32,7 @@ Spiele mit den Reglern in der interaktiven Applikation.
 
 1. **Beobachten:** Stelle den Prior auf 3 % und die Likelihood auf 95 %. Setze die Fehlalarmrate auf 8 %.
 2. **Analysieren:** Der Posterior Balken zeigt dir die tatsächliche Wahrscheinlichkeit für eine Weichenstörung bei einem SmartRail-Alarm.
-3. **Verstehen:** Erhöhe die Fehlalarmrate. Beobachte, wie die Wahrscheinlichkeit für eine echte Störung massiv sinkt, obwohl der Alarm real ist. Ein System mit vielen Fehlalarmen entwertet jeden einzelnen Alarm.
+3. **Verstehen:** Erhöhe z.B. die Fehlalarmrate. Beobachte, wie die Wahrscheinlichkeit für eine echte Störung massiv sinkt, obwohl der Alarm real ist. Ein System mit vielen Fehlalarmen entwertet jeden einzelnen Alarm.
 
 ```{shinylive-python}
 #| standalone: true
