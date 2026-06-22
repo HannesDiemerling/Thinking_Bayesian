@@ -1,36 +1,28 @@
 ---
-title: "Denke Bayesianisch: Ein interaktiver Workshop"
+title: "Denke Bayesianisch"
 ---
 
-## Bayesianische Statistik: Dein Einstieg
+## Worum geht es?
 
-Dieser interaktive Workshop bietet dir einen fundierten Einstieg in die bayesianische Statistik. Er ist für alle konzipiert, die statistische Grundkenntnisse mitbringen und moderne, datengesteuerte Analysemethoden praktisch erlernen möchten.
+Bayesianische Statistik dreht die gewohnte Frage um: Statt zu fragen *„Wie wahrscheinlich sind meine Daten?"*, fragen wir *„Was glaube ich über die Welt — und wie ändert sich dieser Glaube, sobald neue Daten eintreffen?"*
 
-Solltest du diesen Workshop im Rahmen einer begleiteten Veranstaltung besuchen, koordinieren die Kursleiter das weitere Vorgehen mit dir. Wenn du den Kurs eigenständig absolvierst, führt dich dieser Leitfaden durch die Struktur und die optimale Nutzung der Inhalte.
+In diesem Workshop lernst du diese Denkweise Schritt für Schritt am durchgehenden Beispiel **SmartRail** kennen: einem System zur Steuerung von Zügen, dessen wahre Pünktlichkeitsquote wir aus einzelnen Beobachtungen erschließen.
 
----
+## Dein Weg durch den Workshop
 
-### Technische Grundlagen
-Die interaktiven Anwendungen basieren auf Python und Shinylive. Sie werden direkt in deinem Browser ausgeführt, sodass keine Softwareinstallation erforderlich ist. Sämtliche Daten und Berechnungen verbleiben lokal auf deinem Rechner.
+Die sieben Kapitel bauen aufeinander auf und folgen dem bayesianischen Grundgedanken:
 
-Beim ersten Aufruf initialisiert der Browser im Hintergrund eine Python-Laufzeitumgebung. Dieser Vorgang kann einen Moment dauern, stellt jedoch sicher, dass alle Prozesse sicher und privat auf deinem Endgerät ablaufen.
+- **Grundlagen** — Wahrscheinlichkeit verstehen und das Bayes-Theorem (Kap. 1–2)
+- **Die drei Zutaten** — Prior, Likelihood und Posterior (Kap. 3–5)
+- **Anwendung** — Vorhersagen treffen und alles numerisch berechnen (Kap. 6–7)
 
----
+Am Ende kannst du aus einer Vorannahme und beobachteten Daten eine begründete, mit Unsicherheit versehene Schlussfolgerung ziehen.
 
-### Navigation und Struktur
-Über das Menü auf der linken Seite gelangst du zu den einzelnen Kapiteln. Die Inhalte bauen thematisch aufeinander auf, von den fundamentalen Prinzipien bis hin zu fortgeschrittenen Modellen.
+## So nutzt du ihn
 
-Zur besseren Planung findest du bei jedem Abschnitt Angaben zum Schwierigkeitsgrad und zur voraussichtlichen Bearbeitungsdauer. Obwohl jedes Kapitel in sich abgeschlossen ist und separat bearbeitet werden kann, ist für ein tieferes Verständnis das Durchlaufen der empfohlenen Reihenfolge ratsam.
+Jedes Kapitel verbindet eine kurze Erklärung mit einer **interaktiven App**, die direkt im Browser läuft — keine Installation nötig. Probiere die Apps aktiv aus: Bewege die Regler, beobachte, wie sich die Kurven verändern. Genau dort entsteht die Intuition.
 
----
-
-### Aufbau der Aufgaben
-Jedes Kapitel kombiniert Theorie mit interaktiven Aufgaben. Diese Praxisbausteine laden dich dazu ein, die gelernten Konzepte unmittelbar anzuwenden und statistische Zusammenhänge eigenständig zu explorieren.
-
----
-
-### Feedback und Unterstützung
-Deine Rückmeldungen helfen dabei, dieses Lernangebot stetig zu optimieren. Bei inhaltlichen Fragen oder Anregungen kannst du dich jederzeit an die Kursleitung wenden oder die Kontaktmöglichkeiten auf dieser Plattform nutzen.
+Arbeite die Kapitel am besten der Reihe nach durch. Plane pro Kapitel etwa 10 Minuten ein.
 <nav class="workshop-nav">
   <span class="wnav-prev wnav-spacer"></span>
   <a class="wnav-hub" href="https://hannesdiemerling.github.io/Frequent-Reformation/"><span class="wnav-dir">⌂ Hub</span><span class="wnav-sub">Übersicht aller Workshops</span></a>
