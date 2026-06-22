@@ -1,9 +1,9 @@
 ---
-title: "7. Numerische Berechnung"
+title: "Numerische Berechnung"
 format: html
 ---
 
-## Zeit: 15 min | Schwierigkeit: Einsteiger
+## Zeit: 10 min
 
 ### Theorie: Wenn die Mathematik aufgibt
 Das Bayes Theorem berechnet die Posterior Verteilung $P(\theta|D)$. Die Formel erfordert im Nenner die totale Wahrscheinlichkeit der Daten $D$. Um diesen Wert zu ermitteln, verlangt die Mathematik ein Integral über alle erdenklichen Werte des Parameters $\theta$. 

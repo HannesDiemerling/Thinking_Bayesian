@@ -1,9 +1,9 @@
 ---
-title: "4. Die Likelihood"
+title: "Die Likelihood"
 format: html
 ---
 
-## Zeit: 15 min | Schwierigkeit: Einsteiger
+## Zeit: 10 min
 
 ### Theorie: Die Passgenauigkeit von Daten und Hypothese
 In der Statistik (aber auch im echten Leben) werten wir reale Beobachtungen aus. Die Likelihood, ausgedrückt als $P(D|\theta)$, bewertet, wie gut gesammelte Daten $D$ zu einer bestimmten theoretischen Annahme $\theta$ passen. Sie beantwortet die Frage: Wie wahrscheinlich ist es, exakt die vorliegenden Daten $D$ zu beobachten, falls die spezifische Hypothese $\theta$ wahr wäre?

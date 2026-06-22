@@ -1,9 +1,9 @@
 ---
-title: "2. Das Bayes Theorem"
+title: "Das Bayes Theorem"
 format: html
 ---
 
-## Zeit: 15 min | Schwierigkeit: Einfach
+## Zeit: 10 min
 
 ### Theorie: Die Aktualisierung von Wissen
 Menschen sind laufende Informationsverarbeiter. Jeden Tag begegnen uns neue Hinweise, Beobachtungen und Daten. Wenn wir etwas Neues lernen, sollten wir unsere bisherigen Annahmen nicht einfach verwerfen, sondern systematisch aktualisieren.

@@ -1,9 +1,9 @@
 ---
-title: "3. Der Prior"
+title: "Der Prior"
 format: html
 ---
 
-## Zeit: 15 min | Schwierigkeit: Einfach
+## Zeit: 10 min
 
 ### Theorie: Die Quantifizierung von Vorwissen
 Ob Studentin, Wissenschaftler, Dozentin oder KI-System: Wir alle arbeiten mit Annahmen darüber, wie die Welt funktioniert. Dieses Vorwissen kann auf Erfahrung, Theorie, Intuition oder früheren Daten beruhen. Manchmal ist es gut begründet, manchmal eher vage, und in manchen Kontexten kann es auch die Form von Vorurteilen annehmen.

@@ -1,9 +1,9 @@
 ---
-title: "5. Der Posterior"
+title: "Der Posterior"
 format: html
 ---
 
-## Zeit: 15 min | Schwierigkeit: Einsteiger
+## Zeit: 10 min
 
 ### Theorie: Die Synthese von Vorwissen und Fakten
 In der bayesianischen Statistik ist die Berechnung des Posteriors $P(\theta|D)$ das entscheidende Ziel. Der Posterior repräsentiert deine aktualisierte Überzeugung, basierend auf den neuen Daten aktualisierten Vorurteile. Er ist das logische Resultat, wenn du dein theoretisches Vorwissen (den Prior $P(\theta)$) mit den empirischen Fakten (der Likelihood $P(D|\theta)$) kombinierst.

@@ -1,9 +1,9 @@
 ---
-title: "6. Vorhersagen"
+title: "Vorhersagen"
 format: html
 ---
 
-## Zeit: 15 min | Schwierigkeit: Einfach
+## Zeit: 10 min
 
 ### Theorie: Die Zukunft berechnen
 Bisher haben wir nach innen geschaut. Wir haben aus den Daten gelernt, was der wahre Effekt von SmartRail vermutlich ist, und dieses Wissen in der Posterior Verteilung gebündelt. Doch ein Modell beweist seinen Wert erst, wenn es nach vorne schaut. Niemanden interessiert allein der geschätzte Durchschnittswert. Das Projektteam will wissen, was bei der nächsten konkreten Fahrt tatsächlich passiert. Genau diesen Schritt von der Analyse des Bekannten zur Vorhersage des Unbekannten gehen wir in diesem Kapitel.

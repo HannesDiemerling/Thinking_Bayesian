@@ -1,9 +1,9 @@
 ---
-title: "1. Wahrscheinlichkeitsbegriffe"
+title: "Wahrscheinlichkeitsbegriffe"
 format: html
 ---
 
-## Zeit: 15 min | Schwierigkeit: Einfach
+## Zeit: ca. 10 min 
 
 ### Warum Wahrscheinlichkeit?
 Jeden Tag triffst du Entscheidungen unter Unsicherheit. Kommt dein Zug heute pünktlich an? Lohnt es sich, am Bahnsteig zu warten, oder gehst du lieber zu Fuß? Da wir die Zukunft (leider) nicht mit Gewissheit vorhersehen können, möchten wir stattdessen die Unsicherheit in unserer vorhersage greifbar machen. Genau hier setzt die Statistik an. Sie hilft uns dabei, aus vergangenen Beobachtungen auf zukünftige Ereignisse zu schließen. 
