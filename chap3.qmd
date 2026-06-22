@@ -80,15 +80,18 @@ def server(input, output, session):
         x = np.linspace(-30, 35, 500)
         y = norm.pdf(x, mu, sigma)
         
-        fig, ax = plt.subplots(figsize=(10, 5))
+        fig, ax = plt.subplots(figsize=(10, 5), layout="constrained")
         
+        # x in Datenkoordinaten, y in Achsenanteilen (0..1): Beschriftungen bleiben fix
+        label_tf = ax.get_xaxis_transform()
+
         # Negativer Bereich (Verschlechterung) rot hinterlegen
         ax.axvspan(-30, 0, color='#e74c3c', alpha=0.1)
-        ax.text(-15, 0.04, 'SmartRail\nverschlechtert', color='#c0392b', ha='center', va='center', fontweight='bold')
+        ax.text(-15, 0.88, 'SmartRail\nverschlechtert', transform=label_tf, color='#c0392b', ha='center', va='center', fontweight='bold')
 
         # Positiver Bereich (Verbesserung) grün hinterlegen
         ax.axvspan(0, 35, color='#2ecc71', alpha=0.1)
-        ax.text(17.5, 0.04, 'SmartRail\nverbessert', color='#27ae60', ha='center', va='center', fontweight='bold')
+        ax.text(17.5, 0.88, 'SmartRail\nverbessert', transform=label_tf, color='#27ae60', ha='center', va='center', fontweight='bold')
         
         # Prior zeichnen
         ax.plot(x, y, color='#2c3e50', linewidth=2.5)
@@ -98,12 +101,14 @@ def server(input, output, session):
         ax.set_xlabel("Verspätungsreduktion durch SmartRail (Minuten)")
         ax.set_ylabel("Wahrscheinlichkeitsdichte")
         
-        ax.set_ylim(0, 0.08)
         ax.set_xlim(-30, 35)
+        ax.set_ylim(0, y.max() * 1.2)
+        ax.set_yticks([])
         
         # Null-Linie
         ax.axvline(0, color='black', linewidth=1.5, linestyle=':')
-        ax.text(-2, 0.075, 'Kein Effekt (0 Min)', rotation=90, verticalalignment='top')
+        ax.text(-1.5, 0.97, 'Kein Effekt (0 Min)', transform=label_tf, rotation=90,
+                ha='right', va='top')
         
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)

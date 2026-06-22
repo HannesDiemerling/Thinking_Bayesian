@@ -82,7 +82,7 @@ def server(input, output, session):
         post_y = norm.pdf(x_vals, mu, sd_theta)
         pred_y = norm.pdf(x_vals, mu, sd_pred)
         
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(10, 6), layout="constrained")
         
         ax.plot(x_vals, post_y, color='#8e44ad', linewidth=2, label='Posterior P(Theta|D)')
         ax.fill_between(x_vals, 0, post_y, color='#8e44ad', alpha=0.3)
@@ -93,8 +93,9 @@ def server(input, output, session):
         ax.set_xlabel("Verspätungsreduktion in Minuten")
         ax.set_ylabel("Wahrscheinlichkeitsdichte")
         ax.set_xlim(-20, 50)
-        ax.set_ylim(0, max(np.max(post_y), np.max(pred_y)) * 1.1)
-        
+        ax.set_ylim(0, max(np.max(post_y), np.max(pred_y)) * 1.2)
+        ax.set_yticks([])
+
         ax.legend(loc="upper right")
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)

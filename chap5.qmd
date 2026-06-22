@@ -95,7 +95,7 @@ def server(input, output, session):
         like_y = norm.pdf(x_vals, data_mean, data_se)
         post_y = norm.pdf(x_vals, post_mean, post_sd)
         
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(10, 6), layout="constrained")
         
         ax.plot(x_vals, prior_y, color='#7f8c8d', linewidth=2, linestyle='dotted', label='Prior P(Theta)')
         ax.plot(x_vals, like_y, color='#e74c3c', linewidth=2, linestyle='dashed', label='Likelihood P(D|Theta)')
@@ -113,8 +113,9 @@ def server(input, output, session):
         ax.set_xlabel("Wahre durchschnittliche Verspätungsreduktion Theta (Minuten)")
         ax.set_ylabel("Wahrscheinlichkeitsdichte")
         ax.set_xlim(-5, 25)
-        ax.set_ylim(0, max(np.max(like_y), np.max(post_y), np.max(prior_y)) * 1.1)
-        
+        ax.set_ylim(0, max(np.max(like_y), np.max(post_y), np.max(prior_y)) * 1.2)
+        ax.set_yticks([])
+
         ax.legend(loc="upper right")
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)

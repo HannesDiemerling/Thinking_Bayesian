@@ -107,10 +107,12 @@ def server(input, output, session):
         if samples is None:
             return
             
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), layout="constrained")
         
         ax1.plot(samples, color='#34495e', alpha=0.7, linewidth=0.5)
         ax1.set_title("Wanderweg der MCMC Kette (Trace Plot)")
+        ax1.set_xlim(0, len(samples))
+        ax1.set_ylim(-3, 15)
         ax1.set_xlabel("Schrittnummer")
         ax1.set_ylabel("Besuchter Wert Theta")
         ax1.spines['top'].set_visible(False)
@@ -123,13 +125,14 @@ def server(input, output, session):
         ax2.plot(x_vals, target_y, color='#e74c3c', linewidth=3, label='Wahrer Posterior P(Theta|D)')
         
         ax2.set_title("Vergleich Simulation und echtes Ziel")
+        ax2.set_xlim(-5, 18)
+        ax2.set_yticks([])
         ax2.set_xlabel("Durchschnittliche Verspätungsreduktion Theta (Minuten)")
         ax2.set_ylabel("Wahrscheinlichkeitsdichte")
         ax2.legend(loc="upper right")
         ax2.spines['top'].set_visible(False)
         ax2.spines['right'].set_visible(False)
         
-        plt.tight_layout()
         return fig
 
 app = App(app_ui, server)

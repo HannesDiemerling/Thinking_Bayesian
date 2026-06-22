@@ -105,7 +105,7 @@ def server(input, output, session):
         n = len(trains)
         on_time = int(np.sum(trains))
 
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), layout="constrained")
 
         # Frequentistisch: aktueller Anteil pünktlicher Fahrten
         if n > 0:
@@ -134,13 +134,13 @@ def server(input, output, session):
         kurve = "Prior (noch keine Daten)" if n == 0 else f"Posterior nach {n} Fahrten"
         ax2.set_title(f"Bayesianisch\n{kurve}")
         ax2.set_xlabel("Mögliche Pünktlichkeitsquote SmartRail")
+        ax2.set_xlim(0, 1)
         ax2.set_ylim(bottom=0)
         ax2.set_yticks([])
         ax2.spines['top'].set_visible(False)
         ax2.spines['right'].set_visible(False)
         ax2.spines['left'].set_visible(False)
 
-        plt.tight_layout()
         return fig
 
 app = App(app_ui, server)
