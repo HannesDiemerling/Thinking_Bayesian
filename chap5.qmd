@@ -110,3 +110,8 @@ def server(input, output, session):
 
 app = App(app_ui, server)
 ```
+<nav class="workshop-nav">
+  <a class="wnav-prev" href="chap4.html"><span class="wnav-dir">← Zurück</span><span class="wnav-sub">4. Die Likelihood</span></a>
+  <a class="wnav-hub" href="https://hannesdiemerling.github.io/Frequent-Reformation/"><span class="wnav-dir">⌂ Hub</span><span class="wnav-sub">Übersicht</span></a>
+  <a class="wnav-next" href="chap6.html"><span class="wnav-dir">Weiter →</span><span class="wnav-sub">6. Vorhersagen</span></a>
+</nav>
