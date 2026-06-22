@@ -28,6 +28,19 @@ In der Applikation siehst du die fixierten SmartRail-Messwerte $D$ als rote Mark
 2. **Analysieren:** Setze die Hypothese $\theta$ auf 1 Minute. Die Wahrscheinlichkeit, die roten Datenpunkte unter dieser blauen Glocke zu finden, ist eher gering. Der Likelihood Wert im unteren Diagramm fällt ab.
 3. **Maximieren:** Finde den Maximum Likelihood Schätzer manuell. Bewege den Regler so lange, bis die blaue Kurve die roten Punkte perfekt abdeckt und der Balken im unteren Diagramm seine maximale Höhe erreicht.
 
+<div id="shiny-loading" style="background:#f0f4ff; border-left:4px solid #4a6fa5; border-radius:4px; padding:10px 14px; margin-bottom:10px; font-size:14px; color:#2c3e50;">
+  ⏳ Die Anwendung wird geladen, dies kann bis zu 30 Sekunden dauern.
+</div>
+<script>
+(function(){
+  var d = document.getElementById('shiny-loading');
+  if(!d) return;
+  function hide(){ d.style.transition='opacity 0.5s'; d.style.opacity='0'; setTimeout(function(){d.style.display='none';},500); }
+  window.addEventListener('message', function h(e){ hide(); window.removeEventListener('message',h); });
+  setTimeout(hide, 45000);
+})();
+</script>
+
 ```{shinylive-python}
 #| standalone: true
 #| viewerHeight: 650
